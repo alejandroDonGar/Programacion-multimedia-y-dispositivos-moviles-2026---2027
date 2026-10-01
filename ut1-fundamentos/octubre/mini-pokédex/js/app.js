@@ -15,7 +15,7 @@ formulario.addEventListener("submit", async (evento) => {
 
     if (!busqueda) {
         mensaje.textContent = "Introduce un nombre o número." // Si no se encuentra una búsqueda, debajo del formulario sale este mensaje 
-        resultado.innerHTML = ""; // Igual que el mensaje, el box del pokemon se vacía
+        resultado.innerHTML = ""; // Igual que el mensaje, tarjeta del pokemon se vacía
         return;
     }
 
@@ -27,6 +27,8 @@ formulario.addEventListener("submit", async (evento) => {
         const pokemon = await obtenerPokemon(busqueda);
         mostrarPokemon(pokemon);
         mensaje.textContent = "";
+        inputBusqueda.value = "";
+        inputBusqueda.focus();
     } catch (error) {
         mensaje.textContent = error.message;
     }
@@ -56,14 +58,18 @@ const obtenerPokemon = async (busqueda) => {
         tipos: datos.types.map(({ type }) => type.name), // Map transforma el array de la API en un array para el formato json de cada pokemon
     };
 };
-
+//* formatearId
 const formatearId = (id) => {
+    // String(id) transforma un numero en cadena de texto
+    // padStart. El primero, dice cuantos dígitos en total deben aparecer. El segundo, dice que numero se usa de relleno
     return String(id).padStart(3, "0")
 };
 
 //* mostrarPokemon
 // Transforma el resultado del return anterior a una tarjeta bajo la barra de busqueda
 const mostrarPokemon = (pokemon) => {
+
+
     const tiposHTML = pokemon.tipos
         .map((tipo) => `<span class="tipo">${tipo}</span>`) // Convertimo el array a linea por tipo en html. El join los pone uno tras otro.
         .join("");
