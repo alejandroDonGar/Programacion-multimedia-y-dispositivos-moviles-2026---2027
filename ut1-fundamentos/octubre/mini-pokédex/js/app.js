@@ -130,7 +130,11 @@ const crearTarjeta = (pokemon) => {
     return `
     <article class="tarjeta">
         <p class="tarjeta__numero">Nº${formatearId(pokemon.id)}</p>
-        <img class="tarjeta__imagen" src="${pokemon.spriteEspalda}" alt="${pokemon.nombre} de espaldas">
+        <img class="tarjeta__imagen" 
+            src="${pokemon.spriteEspalda}" 
+            data-espalda="${pokemon.spriteEspalda}"
+            data-frente="${pokemon.spriteFrente}"
+            alt="${pokemon.nombre}">
         <h2 class="tarjeta__nombre">${pokemon.nombre}</h2>
         <div class="tarjeta__tipos">${tiposHTML}</div>
         <p class="tarjeta__medidas">${pokemon.altura} m · ${pokemon.peso} kg</p>
@@ -142,4 +146,22 @@ const crearTarjeta = (pokemon) => {
 // Recibe una lista de pokemon y pinta en la pagina una tarjeta con cada uno.
 const mostrarTarjeta = (lista) => {
     contenedorTarjetas.innerHTML = lista.map(crearTarjeta).join("");
+    activarCambioSrite();
+}
+
+//* activarCambioSrite
+// Cuando se pulse el mouse sobre una tarjeta, se cambia la imagen de espaldas a la de frente
+const activarCambioSrite = () => {
+    const tarjetas = contenedorTarjetas.querySelectorAll(".tarjeta"); // Cogemos todas las imagenes de las tarjetas que hay en la pagina
+    tarjetas.forEach((tarjeta) => {
+        const imagen = tarjeta.querySelector(".tarjeta__imagen"); // por cada tarjeta seleccionamos el parametro imagen y se lo pasamos a una nueva variable imagen
+        // Hacemos que la imagen se de la vuelta cuando el mouse entra en el area del sprite
+        tarjeta.addEventListener("mouseenter", () => {
+            imagen.src = imagen.dataset.frente;
+        })
+        // Cunado el mouse salga del area de la imagen vkvemos a poner la imagen de espaldas
+        tarjeta.addEventListener("mouseleave", () => {
+            imagen.src = imagen.dataset.espalda;
+        })
+    })
 }
