@@ -3,6 +3,7 @@ const inputBusqueda = document.querySelector("#busqueda");
 const mensaje = document.querySelector("#mensaje");
 const resultado = document.querySelector("#resultado");
 const botonCargar = document.querySelector("#boton-cargar");
+const contenedorTarjetas = document.querySelector("#tarjetas");
 
 const TOTAL_POKEMON = 151;
 let listaPokemon = [];
@@ -110,7 +111,9 @@ const cargarPokemon = async () => {
         // Promise.all espera a que terminen todas y nos da un array con los 151 pokémon en orden.
         listaPokemon = await Promise.all(promesas);
         mensaje.textContent = `${listaPokemon.length} Pokémon cargados.`;
+        contenedorTarjetas.innerHTML = crearTarjeta(listaPokemon[0]);
     } catch (error) {
+        console.error(error);
         mensaje.textContent = "No se pudo conectar con la PokéAPI";
     }
     botonCargar.disabled = false; // Cuando termina la accion podemos volver a clickear el boton.
@@ -119,3 +122,19 @@ const cargarPokemon = async () => {
 // Cuando se pulse el boton se ejecutara cargarPokemon
 botonCargar.addEventListener("click", cargarPokemon);
 
+//* crearTarjeta
+// Crea una tarjeta con la informacion del pokemon
+const crearTarjeta = (pokemon) => {
+    // Al igual que la tarjeta del codigo base, hacemos que cada tipo salga en una tarjeta
+    const tiposHTML = pokemon.tipos.map((tipo) => `<span class="tipo">${tipo}</span>`).join("");
+    // Hacemos que la tarjeta tenga la imagen de espaldas del pokemon
+    return `
+    <article class="tarjeta">
+        <p class="tarjeta__numero">Nº${formatearId(pokemon.id)}</p>
+        <img class="tarjeta__imagen" src="${pokemon.spriteEspalda}" alt="${pokemon.nombre} de espaldas">
+        <h2 class="tarjeta__nombre">${pokemon.nombre}</h2>
+        <div class="tarjeta__tipos">${tiposHTML}</div>
+        <p class="tarjeta__medidas">${pokemon.altura} m · ${pokemon.peso} kg</p>
+    </article>
+    `
+}
