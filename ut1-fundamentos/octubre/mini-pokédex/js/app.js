@@ -125,7 +125,7 @@ botonCargar.addEventListener("click", cargarPokemon);
 // Crea una tarjeta con la informacion del pokemon
 const crearTarjeta = (pokemon) => {
     // Al igual que la tarjeta del codigo base, hacemos que cada tipo salga en una tarjeta
-    const tiposHTML = pokemon.tipos.map((tipo) => `<span class="tipo">${tipo}</span>`).join("");
+    const tiposHTML = pokemon.tipos.map((tipo) => `<span class="tipo tipo--${tipo}">${tipo}</span>`).join("");
     // Hacemos que la tarjeta tenga la imagen de espaldas del pokemon
     return `
     <article class="tarjeta">

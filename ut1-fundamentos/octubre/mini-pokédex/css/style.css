@@ -179,12 +179,34 @@ body {
 }
 
 .tipo {
-  padding: 0.4rem 0.8rem;
-  color: white;
-  text-transform: capitalize;
-  background: #4b5563;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  background: #c8c8a0;
+  border: 3px solid var(--tinta);
   border-radius: 999px;
+  box-shadow: 2px 2px 0 var(--tinta);
 }
+
+.tipo--normal   { background: #c8c8a0; }
+.tipo--fire     { background: #f8a060; }
+.tipo--water    { background: #90b0f0; }
+.tipo--electric { background: #f8d850; }
+.tipo--grass    { background: #a0d878; }
+.tipo--ice      { background: #b8e8e8; }
+.tipo--fighting { background: #e07068; }
+.tipo--poison   { background: #c890c8; }
+.tipo--ground   { background: #e8d090; }
+.tipo--flying   { background: #c8b8f8; }
+.tipo--psychic  { background: #f898b0; }
+.tipo--bug      { background: #c8d860; }
+.tipo--rock     { background: #d0c078; }
+.tipo--ghost    { background: #a890c0; }
+.tipo--dragon   { background: #a888f8; }
+.tipo--dark     { background: #a89080; }
+.tipo--steel    { background: #d0d0e0; }
+.tipo--fairy    { background: #f0b0d0; }
 
 @media (max-width: 480px) {
   .buscador__controles {
