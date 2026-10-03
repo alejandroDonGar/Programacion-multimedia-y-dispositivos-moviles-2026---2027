@@ -115,7 +115,72 @@ La API lo que hace es devolver muchisima información, cientos de campos. La cla
 **Error de conexión simulando un estado de desconexión en el navegador**
 ![Error de conexión](assets/readme/02-error-conexion.png)
 
+### Problemas encontrados
+
+Durante la simulacion de la conexión fallida, el mensaje de **"151 Pokémon cargados"** seguía apareciendo. El problema era que seguía dentro de la misma sesión donde se estaba guardando el caché. Tuve que desactivar la opción de caché para que saliera el error.
+
 ### Commits de esta fase
 - Clase `Pokemon.js`: [`c088507`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/c088507)
 - Más datos en la clase: [`9ca4da5`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/9ca4da5)
 - Carga de los 151 pokémon con Promise.all: [`171a3e9`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/171a3e9)
+
+---
+
+## 3. Construcción de las tarjetas
+
+### Datos que muestra cada tarjeta
+Todos los datos recopilados salen del objeto Pokemon que cree en el apartado anterior.
+
+| En la tarjeta | Propiedad |
+| --- | --- |
+| Número con formato `Nº001`| `id` con `formatearId`|
+| Nombre en mayúsculas | `nombre` |
+| Sprite de espaldas y de frente | `spriteEspalda` y `spriteFrente` |
+| Tipos 1 o 2 | `tipos` |
+| Altura y peso | `altura` m y `peso` kg |
+
+### Generación dinámica de las tarjetas
+
+Lo que hace el codigo es coger la informacion que ya estabamos generando en con el fetch, y lo traermos para generar un HTML con cada pokémon. Para que después salgan todas las tarjetas seguidas lo que hacemos es generar una lista que por cada objeto, vaya generando la tarjeta una tras otra y luego con un forEach hacemos que cada objeto individual detecte cuando el raton está sobre la tarjeta para darle la vuelta al sprite.
+
+La cuadrícula se adapta sola al ancho de la pantalla usando un `grid` en el CSS
+
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+
+La linea lo que hace es decirle al `grid` que se repita la generacion de las tarjetas pero con un tamaño de 180px y con un maximo de espacio para generase de 1f o toda la pantalla. 
+
+**Colección completa**
+![151 tarjetas](assets/readme/03-coleccion.png)
+
+**Vista en móvil**
+![Vista móvil](assets/readme/03-movil.png)
+
+### Cambio entre sprite trasero y frontal
+
+En la funcion de `cargarTarjeta` lo que hacemos es traernos del fetch la información de ambas imagenes. Luego lo que se hace es con una nueva funcion `activarCambioSrite` es detectar por cada tarjeta cuando el ratón del usuario está dentro del area de la tarjeta usando `tarjeta.addEventListener("mouseenter", () => { imagen.src = imagen.dataset.frente; })` y luego lo contrario para detectar cuando sale de esta con `tarjeta.addEventListener("mouseleave", () => { imagen.src = imagen.dataset.espalda; })`
+
+**Sin el ratón o de espaldas**
+![Tarjeta de espaldas](assets/readme/03-espaldas.png)
+
+**Con el ratón o de frente**
+![Tarjeta de frente](assets/readme/03-frente.png)
+
+### Colores por tipo
+
+La API tiene dos tipos de `tipo`. Por un lado tiene la categoria general donde almacena todos los tipos de los pokemon y por otro, dentro de esta tenemos los diferentes tipo de cada uno, `tipo--fire` o `tipo--water`.
+
+Esto lo que se usa en el CSS para llamar a cada uno y darle un color unico. 
+
+![Colores de los tipos](assets/readme/03-tipos.png)
+
+### Problemas encontrados y las soluciones
+
+- **`contenedorTarjetas is not defined`** Lo que ocurrio aquí fue que al crear el metodo para la generación de las tarjetas se me olvido definir la variable global en el js por lo que no solo se rompió eso sino que tambien el error del catch del addEventListener saltaba.
+- **Tarjetas a lo ancho y con el contenido en columnas** Lo que sucedio fue que el CSS de la cuadricula debía de ir dentro de su propio cubiculo `.tarjetas` pero por error lo metí dentro de `.tarjeta` haciendo que el grid se rompiera.
+- **`tarjetas.forEach is not a function`** Al usario querySelector debemos de usar All también para que nos devuelva toodos las tarjetas en vez de solo una. La foma correcta final seria `querySelectorAll(".tarjeta")`.
+
+### Commits de esta fase
+- Funcion `crearTarjeta` y tarjeta de prueba: [`aab2bf5`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/aab2bf5)
+- Las 151 tarjetas en cuadrícula:[`c406cf7`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/c406cf7)
+- Cambio de sprite al pasar el ratón: [`10bea33`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/10bea33)
+- Colores por tipo:[`3fc10d2`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/3fc10d2)
