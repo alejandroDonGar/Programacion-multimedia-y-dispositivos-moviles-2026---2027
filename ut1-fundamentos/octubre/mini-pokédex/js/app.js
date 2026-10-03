@@ -48,15 +48,8 @@ const obtenerPokemon = async (busqueda) => {
 
     const datos = await respuesta.json(); // Convierte la respuesta en json de la api a objeto JS
     
-    // return datos; <- Devolveria demasiada información
-    return {
-        id: datos.id,
-        nombre: datos.name,
-        imagen: datos.sprites.front_default,
-        altura: datos.height,
-        peso: datos.weight,
-        tipos: datos.types.map(({ type }) => type.name), // Map transforma el array de la API en un array para el formato json de cada pokemon
-    };
+    // Retorna los datos importados de la clase Pokemon.js que pilla la informacion de la API con el fetch (datos)
+    return new Pokemon(datos);
 };
 //* formatearId
 const formatearId = (id) => {
