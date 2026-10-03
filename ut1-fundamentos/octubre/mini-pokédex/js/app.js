@@ -30,6 +30,7 @@ formulario.addEventListener("submit", async (evento) => {
     try {
         const pokemon = await obtenerPokemon(busqueda);
         mostrarPokemon(pokemon);
+        console.log(pokemon);
         mensaje.textContent = "";
         inputBusqueda.value = "";
         inputBusqueda.focus();

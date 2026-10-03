@@ -8,6 +8,7 @@
 
 ### Indice
 1. [Punto de partida](#1-punto-de-partida)
+2. [Carga de los 151 Pokémon](#2-carga-de-los-151-pokémon)
 
 ---
 
@@ -66,4 +67,48 @@ Todas estas fucniones son ejecutadas al presionar el boton de buscar o presionar
 ### Commit del punto de partida
 Este es el código de la practica guiada: [`6a00e51`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/6a00e51093f555ad62d4826cbb21bc40bbf0680a)
 
+---
 
+## 2. Carga de los 151 Pokémon
+
+### Cambios respecto al código incial
+- **Nueva clase `Pokemon.js`** en js/. Antes el metodo de `obtenerPokemon` construia el objeto a mano y en su `return` pero ahora lo que se hace es que la clase `Pokemon.js` se trae los datos del fetch de la funcion a su propia clase para construir el objeto de manera independiente, controlando ella sola los parametros de este.
+- **`obtenerPokemon`** ahora devuelve una instancia de la clase `Pokemon.js` en lugar de un objeto literal.
+- **Nuevo boton `cargarPokemon`** para cargar todos los 151 pokémon usando la función `cargarPokemon`, funcionando en tandem con la función `obtenerPokemon` que va obteniendo los pokemon individualmente con cada click de busqueda.
+
+### Consulta
+
+Basicamente lo que hace la nueva funcion de `cargarPokemon` es hacer cargar una lista de los ids de los 151 pokemon, y esta transforma la variable de id de la funcion `obtenerPokemon` para que usando un for consigamos una lista de los 151 pokemon de una vez usando el ` await Promise.all`.
+
+### Transformación de los datos
+
+La API lo que hace es devolver muchisima información, cientos de campos. La clase Pokemon.js se encarga de manera independiente de unicamente recoger los datos que nos interesa.
+
+| Propiedad | Datos de la API | Transformación |
+| --- | --- | --- |
+| `id` | `id` | - |
+| `nombre` | `name` | - |
+| `spriteFrente` / `spriteEspalda` | `sprite.front_default` / `sprite.back_default` | - |
+| `altura` | `height` | + 10: de decímetros a metros |
+| `peso` | `weight` | + 10: de hectogramos a kilogramos |
+| `experiencia` | `base_experience` | - |
+| `habilidades` | `abilities` | map -> solo el nombre de cada habilidad |
+| `stats` | `stats` | map -> objeto `{nombre: stat, valor: base_stat}` |
+
+**Esta sería la respuesta de la API en la consola usando unicmanete lo campos que seleccionamos en la clase Pokemon.**
+
+![JSON de la API](assets/readme/02-json-consola.png)
+
+### Estado de carga y error
+- Al pulsar el botón de `cargarPokemon` aparece un mensaje de **"Cargando Pokémon..."** y el botón se desactiva para no volver a lanzar la operación más veces de las necesarias.
+- Al terminar de cargar aparece un mensaje de **"151 Pokémon cargados"**.
+- Si falla la conexión sale un mensaje de **"No se pudo conectar con la PokéAPI"** y el botón se vuelve a activar para intentarlo de nuevo.
+
+**Cargando**
+![Cargando Pokémon](/assets/readme/02-cargando.png)
+
+**Carga completa**
+![Carga completa](/assets/readme/02-cargados.png)
+
+**Error de conexión simulando un estado de desconexión en el navegador**
+![Error de conexión](/assets/readme/02-error-conexion.png)
