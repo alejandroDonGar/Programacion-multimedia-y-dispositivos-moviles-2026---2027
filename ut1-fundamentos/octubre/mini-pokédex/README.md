@@ -65,7 +65,7 @@ Todas estas fucniones son ejecutadas al presionar el boton de buscar o presionar
 ![Mensaje de error](assets/readme/01-error.png)
 
 ### Commit del punto de partida
-Este es el código de la practica guiada: [`6a00e51`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/6a00e51093f555ad62d4826cbb21bc40bbf0680a)
+- Este es el código de la practica guiada: [`6a00e51`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/6a00e51093f555ad62d4826cbb21bc40bbf0680a)
 
 ---
 
@@ -89,11 +89,13 @@ La API lo que hace es devolver muchisima información, cientos de campos. La cla
 | `id` | `id` | - |
 | `nombre` | `name` | - |
 | `spriteFrente` / `spriteEspalda` | `sprite.front_default` / `sprite.back_default` | - |
-| `altura` | `height` | + 10: de decímetros a metros |
-| `peso` | `weight` | + 10: de hectogramos a kilogramos |
+| `altura` | `height` | `/` 10: de decímetros a metros |
+| `peso` | `weight` | `/` 10: de hectogramos a kilogramos |
 | `experiencia` | `base_experience` | - |
 | `habilidades` | `abilities` | map -> solo el nombre de cada habilidad |
 | `stats` | `stats` | map -> objeto `{nombre: stat, valor: base_stat}` |
+| `tipos` | `types` | map -> solo el nombre de cada tipo |
+
 
 **Esta sería la respuesta de la API en la consola usando unicmanete lo campos que seleccionamos en la clase Pokemon.**
 
@@ -105,15 +107,15 @@ La API lo que hace es devolver muchisima información, cientos de campos. La cla
 - Si falla la conexión sale un mensaje de **"No se pudo conectar con la PokéAPI"** y el botón se vuelve a activar para intentarlo de nuevo.
 
 **Cargando**
-![Cargando Pokémon](/assets/readme/02-cargando.png)
+![Cargando Pokémon](assets/readme/02-cargando.png)
 
 **Carga completa**
-![Carga completa](/assets/readme/02-cargados.png)
+![Carga completa](assets/readme/02-cargados.png)
 
 **Error de conexión simulando un estado de desconexión en el navegador**
-![Error de conexión](/assets/readme/02-error-conexion.png)
+![Error de conexión](assets/readme/02-error-conexion.png)
 
 ### Commits de esta fase
-Clase `Pokemon.js`: [`c088507`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/c088507)
-Más datos en la clase: [`9ca4da5`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/9ca4da5)
-Carga de los 151 pokémon con Promise.all: [`171a3e9`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/171a3e9)
+- Clase `Pokemon.js`: [`c088507`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/c088507)
+- Más datos en la clase: [`9ca4da5`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/9ca4da5)
+- Carga de los 151 pokémon con Promise.all: [`171a3e9`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/171a3e9)
