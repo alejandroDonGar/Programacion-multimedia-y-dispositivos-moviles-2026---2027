@@ -1,3 +1,11 @@
+:root {
+  --tinta: #203828;         /*Texto y bordes*/
+  --papel: #f8f0d0;         /*Fondo principal*/
+  --papel-oscuro: #efe3b8;  /*Rayas del fondo*/
+  --papel-claro: #fffbe8;   /*Recuadros*/
+  --rojo: #e04830;          /*Cabecera y detalles*/
+  --rojo-oscuro: #b83420;   /*Sombras bajo el rojo anterior*/
+}
 * {
   box-sizing: border-box;
 }
@@ -6,9 +14,11 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 2rem 1rem;
-  font-family: Arial, sans-serif;
-  color: #1f2937;
-  background: #f3f4f6;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--tinta);
+  background: repeating-linear-gradient(45deg, var(--papel) 0 12px, var(--papel-oscuro) 12px 24px);
 }
 
 .contenedor {
