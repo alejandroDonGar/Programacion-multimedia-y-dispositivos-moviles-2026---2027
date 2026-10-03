@@ -111,7 +111,7 @@ const cargarPokemon = async () => {
         // Promise.all espera a que terminen todas y nos da un array con los 151 pokémon en orden.
         listaPokemon = await Promise.all(promesas);
         mensaje.textContent = `${listaPokemon.length} Pokémon cargados.`;
-        contenedorTarjetas.innerHTML = crearTarjeta(listaPokemon[0]);
+        mostrarTarjeta(listaPokemon);
     } catch (error) {
         console.error(error);
         mensaje.textContent = "No se pudo conectar con la PokéAPI";
@@ -137,4 +137,10 @@ const crearTarjeta = (pokemon) => {
         <p class="tarjeta__medidas">${pokemon.altura} m · ${pokemon.peso} kg</p>
     </article>
     `
+}
+
+//* mostrarTarjeta
+// Recibe una lista de pokemon y pinta en la pagina una tarjeta con cada uno.
+const mostrarTarjeta = (lista) => {
+    contenedorTarjetas.innerHTML = lista.map(crearTarjeta).join("");
 }
