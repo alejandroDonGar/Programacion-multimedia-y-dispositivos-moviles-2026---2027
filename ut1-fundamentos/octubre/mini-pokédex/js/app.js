@@ -2,6 +2,10 @@ const formulario = document.querySelector("#formulario-busqueda");
 const inputBusqueda = document.querySelector("#busqueda");
 const mensaje = document.querySelector("#mensaje");
 const resultado = document.querySelector("#resultado");
+const botonCargar = document.querySelector("#boton-cargar");
+
+const TOTAL_POKEMON = 151;
+let listaPokemon = [];
 
 //* addEventListener
 // La funcion lo que hace es indicarle a un parametro que debe ocurrir algo.
@@ -25,7 +29,6 @@ formulario.addEventListener("submit", async (evento) => {
     // obtenerPokemon busca el pokemon en base al input de la busqueda (pokemon o numero)
     try {
         const pokemon = await obtenerPokemon(busqueda);
-        console.log(pokemon);
         mostrarPokemon(pokemon);
         mensaje.textContent = "";
         inputBusqueda.value = "";
@@ -87,4 +90,31 @@ const mostrarPokemon = (pokemon) => {
         </article>
     `;
 };
+
+//* cargarPokemon
+// Recoge los 151 pokemons de la API a la vez y los guarda en la lista de pokemon
+const cargarPokemon = async () => {
+    mensaje.textContent = "Cargando Pokémon...";
+    botonCargar.disabled = true; // Así no se puede pulsar el boton dos veces mientras se carga
+
+    try {
+        // Recoge los ids de todos los pokemons
+        // El for recorre todos los pokemons de 1 a 151
+        const ids = [];
+        for (let i = 1; i <= TOTAL_POKEMON; i++) {
+            ids.push(i);
+        }
+        // Para cada uno de los numeros, llamaos a obtenerPokemon y cada llamada devuelve una promesa (una peticion que todavia no ha terminado)
+        const promesas = ids.map((id) => obtenerPokemon(id));
+        // Promise.all espera a que terminen todas y nos da un array con los 151 pokémon en orden.
+        listaPokemon = await Promise.all(promesas);
+        mensaje.textContent = `${listaPokemon.length} Pokémon cargados.`;
+    } catch (error) {
+        mensaje.textContent = "No se pudo conectar con la PokéAPI";
+    }
+    botonCargar.disabled = false; // Cuando termina la accion podemos volver a clickear el boton.
+}
+
+// Cuando se pulse el boton se ejecutara cargarPokemon
+botonCargar.addEventListener("click", cargarPokemon);
 
