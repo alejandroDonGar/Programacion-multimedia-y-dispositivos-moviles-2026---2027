@@ -3,9 +3,10 @@
 - **Asignatura:** Programación multimedia y dispositivos móviles
 
 **Tecnologías:** HTML, CSS y JavaScript. Los datos son sacados de [PokéAPI](https://pokeapi.co/)
+
 **¿Cómo se ejecuta?  Abrimos index.html y usamos la extension live server para verla en nuestro navegador.**
 
-**Indice**
+### Indice
 1. [Punto de partida](#1-punto-de-partida)
 
 ---
@@ -16,11 +17,18 @@ La base que teniamos de la mini pokédex basicamentes nos permitía conectarnos 
 ### Estructura inicial
     
     mini-pokedex/
+        ├── assets/
+            ├── images/
+            ├── readme/
+                ├── 01-inicio.png
+                ├── 01-busqueda-correcta.png
+                ├── 01-error.png
         ├── index.html
         ├── css/
             ├── style.css
         ├── js/
             ├── app.js
+            ├── Pokemon.js
 
 ### Funcionalidades que ya estaban implementadas
 
@@ -47,15 +55,15 @@ Todas estas fucniones son ejecutadas al presionar el boton de buscar o presionar
 ### Capturas
 
 **Aplicación recien abierta**
-![Página inicial](/assets/readme/01-inicio.png)
+![Página inicial](assets/readme/01-inicio.png)
 
 **Búsqueda correcta**
-![Búsqueda correcta](/assets/readme/01-busqueda-correcta.png)
+![Búsqueda correcta](assets/readme/01-busqueda-correcta.png)
 
 **Pokémon inexistente**
-![Mensaje de error](/assets/readme/01-error.png)
+![Mensaje de error](assets/readme/01-error.png)
 
 ### Commit del punto de partida
-Este es el código de la practica guiada: [`6a00e51`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/tree/main/ut1-fundamentos/octubre/mini-pok%C3%A9dex)
+Este es el código de la practica guiada: [`6a00e51`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/6a00e51093f555ad62d4826cbb21bc40bbf0680a)
 
 
