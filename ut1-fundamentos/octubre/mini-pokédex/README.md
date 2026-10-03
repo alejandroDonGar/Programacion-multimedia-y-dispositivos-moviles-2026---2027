@@ -112,3 +112,8 @@ La API lo que hace es devolver muchisima información, cientos de campos. La cla
 
 **Error de conexión simulando un estado de desconexión en el navegador**
 ![Error de conexión](/assets/readme/02-error-conexion.png)
+
+### Commits de esta fase
+Clase `Pokemon.js`: [`c088507`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/c088507)
+Más datos en la clase: [`9ca4da5`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/9ca4da5)
+Carga de los 151 pokémon con Promise.all: [`171a3e9`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/171a3e9)
