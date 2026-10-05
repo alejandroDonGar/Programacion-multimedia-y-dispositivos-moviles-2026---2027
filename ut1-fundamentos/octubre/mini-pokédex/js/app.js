@@ -9,6 +9,14 @@ const panelContenido = document.querySelector("#panel-contenido");
 const botonCerrarPanel = document.querySelector("#cerrar-panel");
 
 const TOTAL_POKEMON = 151;
+const nombresStats = {
+    "hp": "PS",
+    "attack": "Ataque",
+    "defense": "Defensa",
+    "special-attack": "Ataque Especial",
+    "special-defense": "Defensa Especial",
+    "speed": "Velocidad"
+}
 let listaPokemon = [];
 
 //* addEventListener
@@ -73,11 +81,14 @@ const cargarPokemon = async () => {
 // Cuando se pulse el boton se ejecutara cargarPokemon
 botonCargar.addEventListener("click", cargarPokemon);
 
+const crearTiposHTML = (tipos) => {
+    return tipos.map((tipo) => `<span class="tipo tipo--${tipo}">${tipo}</span>`).join("");
+}
 //* crearTarjeta
 // Crea una tarjeta con la informacion del pokemon
 const crearTarjeta = (pokemon) => {
     // Al igual que la tarjeta del codigo base, hacemos que cada tipo salga en una tarjeta
-    const tiposHTML = pokemon.tipos.map((tipo) => `<span class="tipo tipo--${tipo}">${tipo}</span>`).join("");
+    const tiposHTML = crearTiposHTML(pokemon.tipos);
     // Hacemos que la tarjeta tenga la imagen de espaldas del pokemon
     return `
     <article class="tarjeta">
@@ -168,10 +179,39 @@ const rellenarSelectorTipos = () => {
     selectorTipo.innerHTML = `<option value="todos">Todos</option>` + tipos.map((tipo) => `<option value="${tipo}">${tipo}</option>`).join("");
 }
 
+//* mostrarDetalles
+// Muestra los detalles del pokemon en el panel
 const mostrarDetalles = (pokemon) => {
+    // Creamos el html de las habilidades del pokemon
+    const habilidadesHTML = pokemon.habilidades.map((habilidad) => `<li>${habilidad.replaceAll("-", "")}</li>`).join("");
+
+    // Creamos el html de las stats del pokemon
+    const statsHTML = pokemon.stats.map((stat) => `
+        <li class="stat">
+            <span>${nombresStats[stat.nombre]}</span>
+            <b>${stat.valor}</b>
+        </li>
+    `)
+    .join("");
+    
+    // Creamos el html del los tipos del pokemon
     panelContenido.innerHTML = `
-    <p>Nº${formatearId(pokemon.id)}</p>
-    <h2>${pokemon.nombre}</h2>
+        <div class="detalle">
+            <img class="detalle__imagen" src="${pokemon.spriteFrente}" alt="${pokemon.nombre} de frente">
+            <div class="detalle__datos">
+                <p class="detalle__numero">Nº${formatearId(pokemon.id)}</p>
+                <h2 class="detalle__nombre">${pokemon.nombre}</h2>
+                <div class="detalle__tipos">
+                    <dt>Altura</dt>            <dd>${pokemon.altura}</dd>
+                    <dt>Peso</dt>              <dd>${pokemon.peso}</dd>
+                    <dt>Experiencia</dt>       <dd>${pokemon.experiencia}</dd>
+                </div>
+            </div>
+        </div>
+        <h3 class="detalle__titulo">Habilidades</h3>
+        <ul class="detalle_habilidades">${habilidadesHTML}</ul>
+        <h3 class="detalle__titulo">Estadisticas base</h3>
+        <ul class="detalle_stats">${statsHTML}</ul>
     `;
     panel.showModal();
 }
