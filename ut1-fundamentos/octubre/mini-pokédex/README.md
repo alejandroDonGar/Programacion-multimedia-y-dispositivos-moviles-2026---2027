@@ -9,6 +9,16 @@
 ### Descripción
 Pokédex con los 151 Pokémon de la primera generación que obtiene los datos de PokéAPI. Permite buscarlos por nombre, número o fragmento, filtrarlos por tipo y consultar sus detalles, con un diseño inspirado en los juegos de Game Boy Advance.
 
+### Funcionalidades implementadas
+- Carga de los 151 Pokémon de la primera generación desde PokéAPI.
+- Tarjetas con número, nombre, sprite, tipos, altura y peso.
+- Cambio del sprite de espaldas a frente al pasar el ratón.
+- Búsqueda en tiempo real por nombre, número o fragmento.
+- Filtro por tipo, combinable con la búsqueda.
+- Panel de detalles con experiencia base, habilidades y estadísticas.
+- Mensajes de carga, sin resultados y error con reintento.
+- **Ampliaciones:** barras de estadísticas animadas y diseño retro (fuente pixelada, colores por tipo, animaciones).
+
 ![Diseño final](assets/readme/06-diseno-final.png)
 
 ### Estructura del proyecto
@@ -374,12 +384,20 @@ Al revisar la aplicación antes de las pruebas finales encontré y corregí:
 ## 8. Conclusiones
 
 ### Dificultades
-- Los errores que mas tiempo me llevaron fueron relacionados con `querySelector` y `querySelectorAll`. Algunos de los metodos devolvían `null` en lugar de un elemento, lo que causaba errores en la aplicación.
+- Los errores que mas tiempo me llevaron fueron relacionados con `querySelector` y `querySelectorAll`. Algunos de los metodos devolvían un solo elemento que no requiere de `forEach`.
 - La caché del navegador cuando intentava simular errores de conexión con la red. Estuve bastante tiempo intentando averiguar porque la aplicacion seguia respondiendo incluso cuando desactivaba la red.
 - Al final me tuve que acostumbrar a mirar en la cosola cada vez que algo que añadia no funcionada aparentemente o directamente daba error.
 
 ### Conocimientos que obtuve
-- Veo que lo normal cuando se trabaja con muchas peticiones a la vez es usar `fetch`, `async/await` para manejarlas en paralelo.
+- Veo que lo normal cuando se trabaja con muchas peticiones a la vez es usar `fetch`, `async/await` para manejarlas.
 - El uso de `Promise.all` para manejar múltiples peticiones en paralelo.
-- También, las clases que tiene **JavaScript** para transformar datos como `map`. `filter`, `find`. `forEach` o `join`.
+- También, los métodos de los arrays que tiene **JavaScript** para transformar datos como `map`. `filter`, `find`. `forEach` o `join`.
 - Algunos eventos que solia hacer con `:hover` ahora los puedo hacer con funciones usando eventos como `mouseenter` y `mouseleave`.
+
+### Posibles funcionalidades futuras
+- Botón para ver la versión shiny.
+- Favoritos guardados con `localStorage`.
+- Sonidos de 8 bits y gritos de los Pokémon.
+- Ampliar a más generaciones con un selector.
+- Las páginas de Tipos y de Sobres con cartas que diseñamos al principio.
+- Botones de Pokémon anterior / siguiente en el panel.
