@@ -6,35 +6,39 @@
 
 **¿Cómo se ejecuta?  Abrimos index.html y usamos la extension live server para verla en nuestro navegador.**
 
+### Descripción
+Pokédex con los 151 Pokémon de la primera generación que obtiene los datos de PokéAPI. Permite buscarlos por nombre, número o fragmento, filtrarlos por tipo y consultar sus detalles, con un diseño inspirado en los juegos de Game Boy Advance.
+
+![Diseño final](assets/readme/06-diseno-final.png)
+
+### Estructura del proyecto
+
+    mini-pokédex/
+    ├── index.html
+    ├── README.md
+    ├── assets/
+    │   ├── images/
+    │   └── readme/        ← capturas de este documento
+    ├── css/
+    │   └── style.css
+    └── js/
+        ├── app.js         ← lógica de la aplicación
+        └── Pokemon.js     ← clase Pokemon
+
 ### Indice
 1. [Punto de partida](#1-punto-de-partida)
 2. [Carga de los 151 Pokémon](#2-carga-de-los-151-pokémon)
 3. [Construcción de las tarjetas](#3-construcción-de-las-tarjetas)
-4. [Barra de búsqueda y filtros](#4-barra-de-busqueda-y-filtros)
+4. [Barra de búsqueda y filtros](#4-barra-de-búsqueda-y-filtros)
 5. [Información ampliada](#5-información-ampliada)
 6. [Gestión de estados y errores](#6-gestión-de-estados-y-errores)
 7. [Pruebas finales](#7-pruebas-finales)
+8. [Conclusiones](#8-conclusiones)
 
 ---
 
 ## 1. Punto de partida
 La base que teniamos de la mini pokédex basicamentes nos permitía conectarnos a la API recogiendo unos cuantos parámetros que ofrecía la pagina como nombre, numero, peso, altura y tipo. 
-
-### Estructura inicial
-    
-    mini-pokedex/
-        ├── assets/
-            ├── images/
-            ├── readme/
-                ├── 01-inicio.png
-                ├── 01-busqueda-correcta.png
-                ├── 01-error.png
-        ├── index.html
-        ├── css/
-            ├── style.css
-        ├── js/
-            ├── app.js
-            ├── Pokemon.js
 
 ### Funcionalidades que ya estaban implementadas
 
@@ -359,8 +363,23 @@ Si falla cualquiera de las 151 peticiones, `Promise.all` falla entera y saltamos
 
 ### Correcciones realizadas después de las pruebas
 Al revisar la aplicación antes de las pruebas finales encontré y corregí:
-- [El panel de detalles no mostraba los tipos, que son obligatorios, y las medidas estaban en un `<div>` en lugar de un `<dl>`.]
-- [Dos clases con un solo guion bajo (`detalle_habilidades`, `detalle_stats`), así que no recibían su CSS.]
-- [Las habilidades salían pegadas ("solarpower") porque el `replaceAll` quitaba el guion en lugar de cambiarlo por un espacio.]
-- [`<lable>` mal escrito: el selector de tipos no tenía etiqueta asociada.]
-- [Cambié `==` por `===` y el valor inicial del selector a "todos".]
+- El panel de detalles no mostraba los tipos, que son obligatorios, y las medidas estaban en un `<div>` en lugar de un `<dl>`.
+- Dos clases con un solo guion bajo (`detalle_habilidades`, `detalle_stats`), así que no recibían su CSS.
+- Las habilidades salían pegadas ("solarpower") porque el `replaceAll` quitaba el guion en lugar de cambiarlo por un espacio.
+- `<lable>` mal escrito: el selector de tipos no tenía etiqueta asociada.
+- Cambié `==` por `===` y el valor inicial del selector a "todos".
+
+---
+
+## 8. Conclusiones
+
+### Dificultades
+- Los errores que mas tiempo me llevaron fueron relacionados con `querySelector` y `querySelectorAll`. Algunos de los metodos devolvían `null` en lugar de un elemento, lo que causaba errores en la aplicación.
+- La caché del navegador cuando intentava simular errores de conexión con la red. Estuve bastante tiempo intentando averiguar porque la aplicacion seguia respondiendo incluso cuando desactivaba la red.
+- Al final me tuve que acostumbrar a mirar en la cosola cada vez que algo que añadia no funcionada aparentemente o directamente daba error.
+
+### Conocimientos que obtuve
+- Veo que lo normal cuando se trabaja con muchas peticiones a la vez es usar `fetch`, `async/await` para manejarlas en paralelo.
+- El uso de `Promise.all` para manejar múltiples peticiones en paralelo.
+- También, las clases que tiene **JavaScript** para transformar datos como `map`. `filter`, `find`. `forEach` o `join`.
+- Algunos eventos que solia hacer con `:hover` ahora los puedo hacer con funciones usando eventos como `mouseenter` y `mouseleave`.
