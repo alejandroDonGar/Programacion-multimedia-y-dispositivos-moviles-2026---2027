@@ -294,10 +294,10 @@ El ancho se calcula en porcentaje respecto a 200, con `Math.min` para que no pas
 ![Barras de estadísticas](assets/readme/05-barras.png)
 
 ### Problemas encontrados y soluciones
-- **La X de cerrar salía sin estilo:** [la clase del HTML (`cerrar-panel`) no coincidía con la del CSS (`panel__cerrar`).]
-- **Las barras no se veían:** [escribí `stat_barra` con un guion bajo en vez de `stat__barra`. El hueco se quedaba sin estilo y sin altura, y el relleno, con `height: 100%`, también medía 0. Lo descubrí con Inspeccionar elemento.]
+- La clase del HTML (`cerrar-panel`) no coincidía con la del CSS (`panel__cerrar`).
+- Escribí `stat_barra` con un guion bajo en vez de `stat__barra`. El hueco se quedaba sin estilo y sin altura, y el relleno, con `height: 100%`, también medía 0. Lo descubrí con Inspeccionar elemento.
 
 ### Commits de esta fase
 Botón Ver detalles y panel con `<dialog>`: [`aaf7697`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/aaf7697) 
 Panel con toda la información: [`8e23f74`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/8e23f74) 
-Barras de estadísticas: [`XXXXXXX`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/XXXXXXX) 
+Barras de estadísticas: [`9a10da7`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/9a10da7) 
