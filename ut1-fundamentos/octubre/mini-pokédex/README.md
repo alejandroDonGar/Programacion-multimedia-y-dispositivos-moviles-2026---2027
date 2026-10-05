@@ -12,6 +12,8 @@
 3. [Construcción de las tarjetas](#3-construcción-de-las-tarjetas)
 4. [Barra de búsqueda y filtros](#4-barra-de-busqueda-y-filtros)
 5. [Información ampliada](#5-información-ampliada)
+6. [Gestión de estados y errores](#6-gestión-de-estados-y-errores)
+7. [Pruebas finales](#7-pruebas-finales)
 
 ---
 
@@ -301,3 +303,64 @@ El ancho se calcula en porcentaje respecto a 200, con `Math.min` para que no pas
 Botón Ver detalles y panel con `<dialog>`: [`aaf7697`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/aaf7697) 
 Panel con toda la información: [`8e23f74`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/8e23f74) 
 Barras de estadísticas: [`9a10da7`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/9a10da7) 
+
+---
+
+## 6. Gestión de estados y errores
+
+La aplicación informa siempre de lo que está pasando en la caja de mensajes (`#mensaje`), que se oculta con `:empty` cuando no hay nada que decir.
+
+| Estado | Qué se muestra | Dónde está en el código |
+|---|---|---|
+| Preparada para comenzar | La explicación y el botón "Cargar Pokémon" | `index.html` |
+| Intentar buscar sin haber cargado | "Primero pulsa Cargar Pokémon" | `filtrarPokemon` |
+| Datos cargándose | "Cargando Pokémon..." y el botón desactivado | `cargarPokemon` |
+| Datos cargados | "151 Pokémon cargados." | `cargarPokemon` |
+| Búsqueda | "Mostrando X Pokémon" | `filtrarPokemon` |
+| Sin resultados | "No hay ningún Pokémon que coincida con la búsqueda." | `filtrarPokemon` |
+| Error con PokéAPI | "No se pudo conectar con la PokéAPI" y el botón se reactiva para reintentar | `catch` de `cargarPokemon` |
+
+Si falla cualquiera de las 151 peticiones, `Promise.all` falla entera y saltamos al `catch`, que muestra un mensaje comprensible para el usuario y manda el error técnico a la consola con `console.error` para el programador. La aplicación no se bloquea, porque el botón se vuelve a activar.
+
+**Aplicación preparada**
+
+![Inicio](assets/readme/06-inicio.png)
+
+**Error de conexión**
+
+![Error de conexión](assets/readme/02-error-conexion.png)
+
+---
+
+## 7. Pruebas finales
+
+| Prueba | Resultado esperado | ¿Superada? | Evidencia |
+|---|---|---|---|
+| Abrir la aplicación | Interfaz inicial sin errores | ✅ | [captura](assets/readme/06-inicio.png) |
+| Iniciar la carga | Aparece un mensaje de carga | ✅ | [captura](assets/readme/02-cargando.png) |
+| Finalizar la consulta | Se muestran 151 tarjetas | ✅ | [captura](assets/readme/03-coleccion.png) |
+| Buscar `pikachu` | Solo aparece Pikachu | ✅ | [captura](assets/readme/04-pikachu.png) |
+| Buscar `25` | Solo aparece Pikachu | ✅ | [captura](assets/readme/04-numero.png) |
+| Buscar `char` | Pokémon cuyo nombre contiene "char" | ✅ | [captura](assets/readme/04-char.png) |
+| Nombre inexistente | Mensaje sin errores técnicos | ✅ | [captura](assets/readme/04-sin-resultados.png) |
+| Vaciar la búsqueda | Vuelven todos los Pokémon | ✅ | [captura](assets/readme/06-vaciar.png) |
+| Tipo `fire` | Solo Pokémon de fuego | ✅ | [captura](assets/readme/04-tipo-fire.png) |
+| Texto + tipo | Se cumplen los dos filtros | ✅ | [captura](assets/readme/04-texto-y-tipo.png) |
+| Cursor sobre una tarjeta | El sprite cambia de espaldas a frente | ✅ | [captura](assets/readme/03-frente.png) |
+| Retirar el cursor | Vuelve el sprite trasero | ✅ | [captura](assets/readme/03-espaldas.png) |
+| Pulsar `Ver detalles` | Toda la información ampliada | ✅ | [captura](assets/readme/05-panel-abierto.png) |
+| Cerrar los detalles | El panel desaparece sin recargar | ✅ | [captura](assets/readme/05-panel-cerrado.png) |
+| Fallo de conexión | Mensaje y se puede reintentar | ✅ | [captura](assets/readme/02-error-conexion.png) |
+| Reducir el ancho | Las tarjetas se adaptan sin desbordamientos | ✅ | [captura](assets/readme/06-movil.png) |
+
+**Vista en móvil con el diseño final**
+
+![Móvil](assets/readme/06-movil.png)
+
+### Correcciones realizadas después de las pruebas
+Al revisar la aplicación antes de las pruebas finales encontré y corregí:
+- [El panel de detalles no mostraba los tipos, que son obligatorios, y las medidas estaban en un `<div>` en lugar de un `<dl>`.]
+- [Dos clases con un solo guion bajo (`detalle_habilidades`, `detalle_stats`), así que no recibían su CSS.]
+- [Las habilidades salían pegadas ("solarpower") porque el `replaceAll` quitaba el guion en lugar de cambiarlo por un espacio.]
+- [`<lable>` mal escrito: el selector de tipos no tenía etiqueta asociada.]
+- [Cambié `==` por `===` y el valor inicial del selector a "todos".]
