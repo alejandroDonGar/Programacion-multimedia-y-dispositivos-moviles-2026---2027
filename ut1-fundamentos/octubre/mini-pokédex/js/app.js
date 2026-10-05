@@ -144,7 +144,7 @@ const filtrarPokemon = () => {
     // Filtramos los pokemons que coinciden con el texto y el tipo
     const filtrado = listaPokemon.filter((pokemon) => {
         // Si el texto coincide con el nombre o el id del pokemon
-        const coincideTexto = pokemon.nombre.includes(texto) || Number(texto) == pokemon.id;
+        const coincideTexto = pokemon.nombre.includes(texto) || Number(texto) === pokemon.id;
         // Si el tipo coincide con el pokemon
         const coincideTipo = tipo === "todos" || pokemon.tipos.includes(tipo);
         return coincideTexto && coincideTipo;
@@ -183,7 +183,7 @@ const rellenarSelectorTipos = () => {
 // Muestra los detalles del pokemon en el panel
 const mostrarDetalles = (pokemon) => {
     // Creamos el html de las habilidades del pokemon
-    const habilidadesHTML = pokemon.habilidades.map((habilidad) => `<li>${habilidad.replaceAll("-", "")}</li>`).join("");
+    const habilidadesHTML = pokemon.habilidades.map((habilidad) => `<li>${habilidad.replaceAll("-", " ")}</li>`).join("");
 
     // Creamos el html de las stats del pokemon
     const statsHTML = pokemon.stats.map((stat) => {
@@ -208,17 +208,18 @@ const mostrarDetalles = (pokemon) => {
             <div class="detalle__datos">
                 <p class="detalle__numero">Nº${formatearId(pokemon.id)}</p>
                 <h2 class="detalle__nombre">${pokemon.nombre}</h2>
-                <div class="detalle__tipos">
-                    <dt>Altura</dt>            <dd>${pokemon.altura}</dd>
-                    <dt>Peso</dt>              <dd>${pokemon.peso}</dd>
-                    <dt>Experiencia</dt>       <dd>${pokemon.experiencia}</dd>
-                </div>
+                <div class="tarjeta__tipos">${crearTiposHTML(pokemon.tipos)}</div>
+                    <dl class="detalle__medidas">
+                    <dt>Altura</dt>      <dd>${pokemon.altura} m</dd>
+                    <dt>Peso</dt>        <dd>${pokemon.peso} kg</dd>
+                    <dt>Experiencia</dt> <dd>${pokemon.experiencia}</dd>
+                </dl>
             </div>
         </div>
         <h3 class="detalle__titulo">Habilidades</h3>
-        <ul class="detalle_habilidades">${habilidadesHTML}</ul>
+        <ul class="detalle__habilidades">${habilidadesHTML}</ul>
         <h3 class="detalle__titulo">Estadisticas base</h3>
-        <ul class="detalle_stats">${statsHTML}</ul>
+        <ul class="detalle__stats">${statsHTML}</ul>
     `;
     panel.showModal();
 }
