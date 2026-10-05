@@ -74,16 +74,21 @@ body {
 .buscador {
   max-width: 650px;
   margin: 0 auto;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 8px 25px rgb(0 0 0 / 10%);
+  padding: 1.25rem;
+  background: var(--papel-claro);
+  border: 4px solid var(--tinta);
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--tinta);
 }
 
 .buscador label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
+  margin: 0.75rem 0 0.4rem;
+  color: var(--rojo);
+}
+
+.buscador label:first-child {
+  margin-top: 0;
 }
 
 .buscador__controles {
@@ -94,37 +99,45 @@ body {
 .buscador input {
   flex: 1;
   min-width: 0;
-  padding: 0.75rem;
-  border: 2px solid #d1d5db;
-  border-radius: 0.5rem;
+  padding: 0.6rem;
   font: inherit;
+  color: var(--tinta);
+  background: white;
+  border: 3px solid var(--tinta);
 }
 
 .buscador input:focus {
-  border-color: #dc2626;
-  outline: 3px solid rgb(220 38 38 / 20%);
+  outline: none;
+  border-color: var(--rojo);
 }
 
 .buscador button {
-  padding: 0.75rem 1.25rem;
-  border: 0;
-  border-radius: 0.5rem;
-  color: white;
+  padding: 0.6rem 1rem;
   font: inherit;
-  font-weight: bold;
-  background: #dc2626;
+  color: var(--papel-claro);
+  background: var(--tinta);
+  border: 3px solid var(--tinta);
   cursor: pointer;
 }
 
 .buscador button:hover {
-  background: #b91c1c;
+  background: var(--rojo);
 }
 
 .mensaje {
+  max-width: 650px;
   min-height: 1.5rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem auto;
+  padding: 0.8rem 1rem;
   text-align: center;
-  font-weight: bold;
+  background: var(--papel-claro);
+  border: 4px solid var(--tinta);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 3px var(--papel-claro), inset 0 0 0 6px #88b0d8;
+}
+
+.mensaje:empty {
+  display: none;
 }
 
 .tipo {
