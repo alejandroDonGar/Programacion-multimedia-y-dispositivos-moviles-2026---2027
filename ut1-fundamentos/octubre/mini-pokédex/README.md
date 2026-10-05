@@ -184,3 +184,73 @@ Esto lo que se usa en el CSS para llamar a cada uno y darle un color unico.
 - Las 151 tarjetas en cuadrícula:[`c406cf7`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/c406cf7)
 - Cambio de sprite al pasar el ratón: [`10bea33`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/10bea33)
 - Colores por tipo:[`3fc10d2`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/3fc10d2)
+
+---
+
+## 4. Barra de búsqueda y filtros
+
+### Cambios respecto a la práctica guiada
+Ahora el formularion ya no pide un Pokémon a la API sino que filtra las tarjetas que ya generamos al pulsar `Cargar Pokémon`. La funcion `mostrarPokemon` y la sección `#resultado` ya no se usan por lo que las borré. Tambien, `obtenerPokemon` se conserva porque la usa `cargarPokemon`.
+
+### Búsqueda por texto
+La funcion `filtrarPokemon` hace lo siguiente:
+ - Normaliza el texto con `trim()` y `toLowerCase().
+- Usa `filter` sobre `listaPokemon` y pasa el resultado a `mostrarTarjeta`.
+- Busca por nombre o fragmento con `includes` y por número con `Number(texto) === pokemon.id`.
+- Cuando el buscador está vacío vuelven los 151, porque `includes("")` siempre es `true`.
+- Funciona al escribir (evento `input`) y al pulsar Buscar o Enter (evento `submit`).
+
+### Filtro por tipo
+`rellenarSelectorTipos` recorre los tipos de todos los Pokémon cargados, guarda cada uno una sola vez con `includes` y los ordena. No hay ningún tipo escrito a mano.
+
+### Combinación de los dos filtros
+
+    const coincideTexto = pokemon.nombre.includes(texto) || Number(texto) === pokemon.id;
+    const coincideTipo = tipo === "todos" || pokemon.tipos.includes(tipo);
+    return coincideTexto && coincideTipo;
+
+Con el `return` coincideTexto && coincideTipo, solo se muestra el pokemon si cumple ambas condiciones.
+
+### Casos de prueba
+
+| Búsqueda | Resultado |
+|---|---|
+| `pikachu` | ✅ Solo Pikachu |
+| `25` | ✅ Solo Pikachu |
+| `char` | ✅ Charmander, Charmeleon y Charizard |
+| Nombre inexistente | ✅ Mensaje "No hay ningún Pokémon..." y sin tarjetas |
+| Buscador vacío | ✅ Vuelven los 151 |
+| Tipo `fire` | ✅ Solo Pokémon de fuego |
+| `char` + `fire` | ✅ Se cumplen los dos filtros |
+
+**Búsqueda por nombre**
+
+![Búsqueda pikachu](assets/readme/04-pikachu.png)
+
+**Búsqueda por número**
+
+![Búsqueda 25](assets/readme/04-numero.png)
+
+**Búsqueda por fragmento**
+
+![Búsqueda char](assets/readme/04-char.png)
+
+**Sin resultados**
+
+![Sin resultados](assets/readme/04-sin-resultados.png)
+
+**Filtro por tipo**
+
+![Tipo fuego](assets/readme/04-tipo-fire.png)
+
+**Texto y tipo combinados**
+
+![char + fuego](assets/readme/04-texto-y-tipo.png)
+
+### Problemas encontrados y soluciones
+- El filtrado en vivo solo funcionaba después de pulsar Buscar. Puse el evento `input` dentro del `submit`, así que solo se registraba al enviar y se volvía a añadir en cada búsqueda. Lo saqué fuera para registrarlo una sola vez.
+- `Cannot access 'filtrarPokemon' before initialization`. Registraba el evento antes de la línea donde se crea la función con `const`. Moví los `addEventListener` al final del archivo.
+
+### Commits de esta fase
+Búsqueda por nombre, número y fragmento en tiempo real: [`af52ade`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/af52ade) 
+Selector de tipos combinado con la búsqueda: [`3771bff`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/3771bff) 
