@@ -3,6 +3,7 @@ const inputBusqueda = document.querySelector("#busqueda");
 const mensaje = document.querySelector("#mensaje");
 const botonCargar = document.querySelector("#boton-cargar");
 const contenedorTarjetas = document.querySelector("#tarjetas");
+const selectorTipo = document.querySelector("#filtro-tipo");
 
 const TOTAL_POKEMON = 151;
 let listaPokemon = [];
@@ -11,17 +12,11 @@ let listaPokemon = [];
 // La funcion lo que hace es indicarle a un parametro que debe ocurrir algo.
 // En este caso, cuando le demos al boton con id "submit" se imprimira la respuesta de la busqueda
 formulario.addEventListener("submit",  (evento) => {
-    // "input" se dispara cada vez que cambia el texto (al escribir, borrar o pegar)
-    inputBusqueda.addEventListener("input", filtrarPokemon);
     // Por defecto un formulario envia los datos. Lo preveemos con esta funcion para controlarlo por nuestra clase JS
     evento.preventDefault(); 
-    
-    if (listaPokemon.length === 0) {
-        mensaje.textContent = "Primero pulsa \"Cargar Pokémon\".";
-        return;
-    }
     filtrarPokemon();
 });
+
 
 //* obtenerPokemon
 //Funcion que consulta la pokeApi
@@ -64,6 +59,7 @@ const cargarPokemon = async () => {
         listaPokemon = await Promise.all(promesas);
         mensaje.textContent = `${listaPokemon.length} Pokémon cargados.`;
         mostrarTarjeta(listaPokemon);
+        rellenarSelectorTipos();
     } catch (error) {
         console.error(error);
         mensaje.textContent = "No se pudo conectar con la PokéAPI";
@@ -122,14 +118,53 @@ const activarCambioSrite = () => {
 //* filtrarPokemon
 // Filtra los pokemons que hay en la lista
 const filtrarPokemon = () => {
+    if (listaPokemon.length === 0) {
+        mensaje.textContent = "Primero pulsa \"Cargar Pokémon\".";
+        return;
+    }
+
     const texto = inputBusqueda.value.toLowerCase().trim(); // Texto de la busqueda normalizado
-    const filtrado = listaPokemon.filter((pokemon) => pokemon.nombre.includes(texto) || Number(texto) === pokemon.id);
+    const tipo = selectorTipo.value;
+
+    // Filtramos los pokemons que coinciden con el texto y el tipo
+    const filtrado = listaPokemon.filter((pokemon) => {
+        // Si el texto coincide con el nombre o el id del pokemon
+        const coincideTexto = pokemon.nombre.includes(texto) || Number(texto) == pokemon.id;
+        // Si el tipo coincide con el pokemon
+        const coincideTipo = tipo === "todos" || pokemon.tipos.includes(tipo);
+        return coincideTexto && coincideTipo;
+    })
 
     mostrarTarjeta(filtrado);
 
-    if(filtrado.length === 0) {
-        mensaje.textContent = `No hay ningún pokémon que coincida con "${texto}"`;
+    if (filtrado.length === 0) {
+        mensaje.textContent = "No hay ningún Pokémon que coincida con la búsqueda.";
     } else {
         mensaje.textContent = `Mostrando ${filtrado.length} Pokémon`;
     }
 }
+
+//* rellenarSelectorTipos
+// Rellena el selector de tipos con todos los tipos de todos los pokemons
+const rellenarSelectorTipos = () => {
+    const tipos = [];
+
+    // Recorremos todos los tipos de todos los pokemons y los guardamos en un array
+    listaPokemon.forEach((pokemon) => {
+        // Recorremos todos los tipos de cada pokemon
+        pokemon.tipos.forEach((tipo) => {
+            // Si el tipo no esta en el array, lo añadimos
+            if (!tipos.includes(tipo)) {
+                tipos.push(tipo);
+            }
+        })
+    })
+    tipos.sort();
+    // Creamos el hatml que se va a desplegar donde TODOS queda como la primera opcion y luego la lista de tipos.
+    selectorTipo.innerHTML = `<option value="todos">Todos</option>` + tipos.map((tipo) => `<option value="${tipo}">${tipo}</option>`).join("");
+}
+
+// "input" se dispara cada vez que cambia el texto (al escribir, borrar o pegar)
+inputBusqueda.addEventListener("input", filtrarPokemon);
+// "change" se dispara al elegir otra opción en el selector
+selectorTipo.addEventListener("change", filtrarPokemon);
