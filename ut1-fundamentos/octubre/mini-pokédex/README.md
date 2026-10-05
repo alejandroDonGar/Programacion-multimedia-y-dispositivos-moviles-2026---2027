@@ -9,6 +9,9 @@
 ### Indice
 1. [Punto de partida](#1-punto-de-partida)
 2. [Carga de los 151 Pokémon](#2-carga-de-los-151-pokémon)
+3. [Construcción de las tarjetas](#3-construcción-de-las-tarjetas)
+4. [Barra de búsqueda y filtros](#4-barra-de-busqueda-y-filtros)
+5. [Información ampliada](#5-información-ampliada)
 
 ---
 
@@ -254,3 +257,47 @@ Con el `return` coincideTexto && coincideTipo, solo se muestra el pokemon si cum
 ### Commits de esta fase
 Búsqueda por nombre, número y fragmento en tiempo real: [`af52ade`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/af52ade) 
 Selector de tipos combinado con la búsqueda: [`3771bff`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/3771bff) 
+
+---
+
+## 5. Información ampliada
+
+### Botón "Ver detalles" y panel
+[Explica cómo funciona:]
+- [Cada tarjeta tiene un botón "Ver detalles" con el número del Pokémon guardado en `data-id`.]
+- [El panel es un elemento `<dialog>` de HTML: se abre con `showModal()`, se cierra con `close()` (botón X) o con la tecla Esc, y oscurece el fondo. Se cierra sin recargar la página.]
+- [Explica la delegación de eventos: un solo `addEventListener` en el contenedor de las tarjetas, `closest` para saber si se pulsó el botón y `find` para buscar el Pokémon en `listaPokemon`. Por qué así funciona también con las tarjetas filtradas.]
+
+### Datos adicionales
+| Dato | Propiedad de la clase `Pokemon` |
+|---|---|
+| Imagen frontal grande | `spriteFrente` |
+| Tipos | `tipos` (reutilizando `crearTiposHTML`) |
+| Altura y peso | `altura` y `peso` |
+| Experiencia base | `experiencia` |
+| Habilidades | `habilidades` |
+| Estadísticas base (PS, ataque, defensa, ataque especial, defensa especial, velocidad) | `stats`, con los nombres en español gracias a `nombresStats` |
+
+[Explica brevemente la refactorización: el código de los tipos se repetía en la tarjeta y en el panel, así que lo saqué a `crearTiposHTML`.]
+
+**Panel abierto**
+
+![Panel de detalles](assets/readme/05-panel-abierto.png)
+
+**Panel cerrado**
+
+![Panel cerrado](assets/readme/05-panel-cerrado.png)
+
+### Ampliación: barras de estadísticas
+[Explica las barras: el ancho se calcula en porcentaje respecto a 200, con `Math.min` para que no pase del 100 %; los bloques se hacen con `repeating-linear-gradient`; se llenan a saltos con una animación con `steps(10)`; y se desactivan si el usuario tiene activado reducir movimiento.]
+
+![Barras de estadísticas](assets/readme/05-barras.png)
+
+### Problemas encontrados y soluciones
+- **La X de cerrar salía sin estilo:** [la clase del HTML (`cerrar-panel`) no coincidía con la del CSS (`panel__cerrar`).]
+- **Las barras no se veían:** [escribí `stat_barra` con un guion bajo en vez de `stat__barra`. El hueco se quedaba sin estilo y sin altura, y el relleno, con `height: 100%`, también medía 0. Lo descubrí con Inspeccionar elemento.]
+
+### Commits de esta fase
+Botón Ver detalles y panel con `<dialog>`: [`aaf7697`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/aaf7697) 
+Panel con toda la información: [`8e23f74`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/8e23f74) 
+Barras de estadísticas: [`XXXXXXX`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/XXXXXXX) 

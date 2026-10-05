@@ -186,12 +186,19 @@ const mostrarDetalles = (pokemon) => {
     const habilidadesHTML = pokemon.habilidades.map((habilidad) => `<li>${habilidad.replaceAll("-", "")}</li>`).join("");
 
     // Creamos el html de las stats del pokemon
-    const statsHTML = pokemon.stats.map((stat) => `
-        <li class="stat">
-            <span>${nombresStats[stat.nombre]}</span>
-            <b>${stat.valor}</b>
-        </li>
-    `)
+    const statsHTML = pokemon.stats.map((stat) => {
+        // Calculamos el porcentaje de la barra
+        const pordcentaje = Math.min((stat.valor / 200) * 100, 100);
+        return `
+            <li class="stat">
+                <span>${nombresStats[stat.nombre]}</span>
+                <div class="stat__barra">
+                    <div class="stat__relleno" style="width: ${pordcentaje}%;"></div>
+                </div>
+                <b>${stat.valor}</b>
+            </li>
+        `
+    })
     .join("");
     
     // Creamos el html del los tipos del pokemon
