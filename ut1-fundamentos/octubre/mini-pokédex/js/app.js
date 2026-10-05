@@ -4,6 +4,9 @@ const mensaje = document.querySelector("#mensaje");
 const botonCargar = document.querySelector("#boton-cargar");
 const contenedorTarjetas = document.querySelector("#tarjetas");
 const selectorTipo = document.querySelector("#filtro-tipo");
+const panel = document.querySelector("#panel");
+const panelContenido = document.querySelector("#panel-contenido");
+const botonCerrarPanel = document.querySelector("#cerrar-panel");
 
 const TOTAL_POKEMON = 151;
 let listaPokemon = [];
@@ -87,6 +90,7 @@ const crearTarjeta = (pokemon) => {
         <h2 class="tarjeta__nombre">${pokemon.nombre}</h2>
         <div class="tarjeta__tipos">${tiposHTML}</div>
         <p class="tarjeta__medidas">${pokemon.altura} m · ${pokemon.peso} kg</p>
+        <button class="tarjeta__boton" type="button" data-id="${pokemon.id}">Ver detalles</button>
     </article>
     `
 }
@@ -164,7 +168,31 @@ const rellenarSelectorTipos = () => {
     selectorTipo.innerHTML = `<option value="todos">Todos</option>` + tipos.map((tipo) => `<option value="${tipo}">${tipo}</option>`).join("");
 }
 
+const mostrarDetalles = (pokemon) => {
+    panelContenido.innerHTML = `
+    <p>Nº${formatearId(pokemon.id)}</p>
+    <h2>${pokemon.nombre}</h2>
+    `;
+    panel.showModal();
+}
+
 // "input" se dispara cada vez que cambia el texto (al escribir, borrar o pegar)
 inputBusqueda.addEventListener("input", filtrarPokemon);
 // "change" se dispara al elegir otra opción en el selector
 selectorTipo.addEventListener("change", filtrarPokemon);
+// Cuando se pulse el boton ver detalles de una tarjeta, se muestra los detalles del pokemon
+contenedorTarjetas.addEventListener("click", (evento) => {
+    // Si el usuario no pulse el boton ver detalles, no se hace nada
+    const boton = evento.target.closest(".tarjeta__boton");
+
+    if(!boton) return; // Si el usuario no pulse el boton ver detalles, no se hace nada
+
+    const id = Number(boton.dataset.id); // Obtenemos el id del pokemon
+    const pokemon = listaPokemon.find((pokemon) => pokemon.id === id); // Buscamos el pokemon en la lista
+
+    mostrarDetalles(pokemon);
+});
+// Cuando se pulse el boton cerrar del panel, se cierra el panel
+botonCerrarPanel.addEventListener("click", () => {
+    panel.close();
+});
