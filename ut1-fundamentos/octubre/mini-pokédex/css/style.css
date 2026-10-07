@@ -258,7 +258,7 @@ body {
 }
 
 .panel {
-  width: min(90vw, 600px);
+  width: min(90vw, 1000px);
   padding: 2rem;
   color: var(--tinta);
   font-family: inherit;
