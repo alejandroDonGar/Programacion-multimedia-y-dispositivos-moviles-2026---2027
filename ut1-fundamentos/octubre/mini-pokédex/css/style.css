@@ -273,8 +273,12 @@ body {
 }
 
 .panel__cerrar {
+  position: absolute;
   float: right;
   padding: 0.3rem 0.6rem;
+  z-index: 1;
+  top: 0.75rem;
+  right: 0.75rem;
   font: inherit;
   color: var(--papel-claro);
   background: var(--tinta);
@@ -284,7 +288,7 @@ body {
 
 .detalle {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr); 
   align-items: center;
   gap: 1.5rem;
 }
@@ -307,6 +311,7 @@ body {
   font-size: 1.4em;
   font-weight: normal;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .detalle .tarjeta__tipos { 
@@ -424,4 +429,32 @@ body {
   opacity: 0.6;
   cursor: not-allowed;
   translate: 0 0;
+}
+
+@media (max-width: 600px) {
+  .panel {
+    width: 94vw;
+    padding: 2.75rem 1rem 1rem;
+  }
+
+  .detalle {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+  }
+
+  .detalle__imagen {
+    width: min(192px, 100%);
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .detalle .tarjeta__tipos {
+    justify-content: center;
+  }
+
+  .stat {
+    grid-template-columns: 8.5em 1fr 2.5em;
+    gap: 0.5rem;
+  }
 }
