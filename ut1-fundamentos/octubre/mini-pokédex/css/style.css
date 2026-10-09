@@ -257,6 +257,26 @@ body {
   background: var(--rojo-oscuro);
 }
 
+/* Los dos botones de la tarjeta, uno debajo del otro y del mismo ancho */
+.tarjeta__boton {
+  display: block;
+  width: 100%;
+}
+
+.tarjeta__boton + .tarjeta__boton {
+  margin-top: 0.5rem;
+}
+
+/* Variante dorada para el boton del shiny */
+.tarjeta__boton--shiny {
+  color: var(--tinta);
+  background: #f0c840;
+}
+
+.tarjeta__boton--shiny:hover {
+  background: #d8a820;
+}
+
 .panel {
   width: min(90vw, 1000px);
   padding: 2rem;

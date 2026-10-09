@@ -5,6 +5,7 @@ class Pokemon {
         this.nombre = datos.name;
         this.spriteFrente = datos.sprites.front_default;
         this.spriteEspalda = datos.sprites.back_default;
+        this.spriteShiny = datos.sprites.front_shiny;
         this.altura = datos.height / 10;
         this.peso = datos.weight / 10;
         this.tipos = datos.types.map(({ type }) => type.name);

@@ -102,6 +102,7 @@ const crearTarjeta = (pokemon) => {
         <div class="tarjeta__tipos">${tiposHTML}</div>
         <p class="tarjeta__medidas">${pokemon.altura} m · ${pokemon.peso} kg</p>
         <button class="tarjeta__boton" type="button" data-id="${pokemon.id}">Ver detalles</button>
+        <button class="tarjeta__boton tarjeta__boton--shiny" type="button" data-id="${pokemon.id}" data-shiny>Ver shiny</button>
     </article>
     `
 }
@@ -180,8 +181,10 @@ const rellenarSelectorTipos = () => {
 }
 
 //* mostrarDetalles
-// Muestra los detalles del pokemon en el panel
-const mostrarDetalles = (pokemon) => {
+// Muestra los detalles del pokemon en el panel. Con esShiny = true enseña el sprite shiny en vez del normal
+const mostrarDetalles = (pokemon, esShiny = false) => {
+    const sprite = esShiny ? pokemon.spriteShiny : pokemon.spriteFrente;
+
     // Creamos el html de las habilidades del pokemon
     const habilidadesHTML = pokemon.habilidades.map((habilidad) => `<li>${habilidad.replaceAll("-", " ")}</li>`).join("");
 
@@ -204,7 +207,7 @@ const mostrarDetalles = (pokemon) => {
     // Creamos el html del los tipos del pokemon
     panelContenido.innerHTML = `
         <div class="detalle">
-            <img class="detalle__imagen" src="${pokemon.spriteFrente}" alt="${pokemon.nombre} de frente">
+            <img class="detalle__imagen" src="${sprite}" alt="${pokemon.nombre} ${esShiny ? "shiny" : "de frente"}">
             <div class="detalle__datos">
                 <p class="detalle__numero">Nº${formatearId(pokemon.id)}</p>
                 <h2 class="detalle__nombre">${pokemon.nombre}</h2>
@@ -238,7 +241,8 @@ contenedorTarjetas.addEventListener("click", (evento) => {
     const id = Number(boton.dataset.id); // Obtenemos el id del pokemon
     const pokemon = listaPokemon.find((pokemon) => pokemon.id === id); // Buscamos el pokemon en la lista
 
-    mostrarDetalles(pokemon);
+    // El boton de shiny lleva el atributo data-shiny, asi sabemos cual de los dos botones se ha pulsado
+    mostrarDetalles(pokemon, boton.hasAttribute("data-shiny"));
 });
 // Cuando se pulse el boton cerrar del panel, se cierra el panel
 botonCerrarPanel.addEventListener("click", () => {
