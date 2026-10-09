@@ -71,6 +71,7 @@ const cargarPokemon = async () => {
         mensaje.textContent = `${listaPokemon.length} Pokémon cargados.`;
         mostrarTarjeta(listaPokemon);
         rellenarSelectorTipos();
+        
     } catch (error) {
         console.error(error);
         mensaje.textContent = "No se pudo conectar con la PokéAPI";

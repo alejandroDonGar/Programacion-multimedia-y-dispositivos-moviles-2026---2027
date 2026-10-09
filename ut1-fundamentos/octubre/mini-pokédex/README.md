@@ -401,3 +401,17 @@ Al revisar la aplicación antes de las pruebas finales encontré y corregí:
 - Ampliar a más generaciones con un selector.
 - Las páginas de Tipos y de Sobres con cartas que diseñamos al principio.
 - Botones de Pokémon anterior / siguiente en el panel.
+
+### Modificaciones
+
+**Contador y restablecimiento**
+
+Aqui hacemos que se muestre el número de pokemon en cada momento, al cargar 151, al filtrar que aparezcan en tiempo real los que vayan coincidiendo.
+
+![Filtrado total](assets/readme/modificacion-01.png)
+
+![Filtrado parcial](assets/readme/modificacion-01-filtrados.png)
+
+**Pokémon aleatorio**
+
+**Equipo de tres Pokémon**
