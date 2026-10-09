@@ -7,6 +7,7 @@ const selectorTipo = document.querySelector("#filtro-tipo");
 const panel = document.querySelector("#panel");
 const panelContenido = document.querySelector("#panel-contenido");
 const botonCerrarPanel = document.querySelector("#cerrar-panel");
+const busquedaRandom = document.querySelector("#busqueda-random");
 
 const TOTAL_POKEMON = 151;
 const nombresStats = {
@@ -44,6 +45,39 @@ const obtenerPokemon = async (busqueda) => {
     // Retorna los datos importados de la clase Pokemon.js que pilla la informacion de la API con el fetch (datos)
     return new Pokemon(datos);
 };
+
+
+//* cargarPokemon
+// Recoge los 151 pokemons de la API a la vez y los guarda en la lista de pokemon
+const cargarPokemonRandom = async () => {
+    mensaje.textContent = "Cargando Pokémon...";
+    botonCargar.disabled = true; // Así no se puede pulsar el boton dos veces mientras se carga
+
+    try {
+        // Recoge los ids de todos los pokemons
+        // El for recorre todos los pokemons de 1 a 151
+        const ids = [];
+        for (let i = 1; i <= TOTAL_POKEMON; i++) {
+            ids.push(i);
+        }
+        // Para cada uno de los numeros, llamaos a obtenerPokemon y cada llamada devuelve una promesa (una peticion que todavia no ha terminado)
+        const promesas = ids.map((id) => obtenerPokemon(id));
+        // Promise.all espera a que terminen todas y nos da un array con los 151 pokémon en orden.
+        listaPokemon = await Promise.all(promesas);
+        mensaje.textContent = `${listaPokemon.length} Pokémon cargados.`;
+        mostrarTarjeta(listaPokemon);
+        rellenarSelectorTipos();
+        
+    } catch (error) {
+        console.error(error);
+        mensaje.textContent = "No se pudo conectar con la PokéAPI";
+    }
+    botonCargar.disabled = false; // Cuando termina la accion podemos volver a clickear el boton.
+}
+
+
+
+
 //* formatearId
 const formatearId = (id) => {
     // String(id) transforma un numero en cadena de texto

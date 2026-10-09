@@ -412,6 +412,12 @@ Aqui hacemos que se muestre el número de pokemon en cada momento, al cargar 151
 
 ![Filtrado parcial](assets/readme/modificacion-01-filtrados.png)
 
+- Commit de esta parte: [`dca595e`](https://github.com/alejandroDonGar/Programacion-multimedia-y-dispositivos-moviles-2026---2027/commit/dca595e26bf8ef538b7f8b5ca119598d92b4f4c2) 
+
 **Pokémon aleatorio**
 
+- Commit de esta parte:
+
 **Equipo de tres Pokémon**
+
+- Commit de esta parte:
