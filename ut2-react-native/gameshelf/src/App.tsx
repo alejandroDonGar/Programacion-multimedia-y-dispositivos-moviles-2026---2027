@@ -1,6 +1,6 @@
 import './App.css'
 import GameCard from './components/GameCard';
-import { use, useState } from "react";
+import { useState } from "react";
 
 type Game = {
   id: number;

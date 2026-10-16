@@ -156,8 +156,6 @@ La conexión se produce en dos pasos:
     *   En el archivo **TSX**, los elementos reciben un nombre identificador mediante el atributo **`className`** (por ejemplo: `className="catalog"` o `className="card"`). Se usa `className` y no `class` porque la palabra `class` está reservada nativamente por JavaScript.
     *   En el archivo **CSS**, nos referimos a ese identificador anteponiendo un **punto (`.`)**, quedando como `.catalog` o `.card`. El navegador lee el punto, entiende que busca una clase e inyecta todas las propiedades visuales descritas dentro de las llaves al elemento TSX correspondiente.
 
----
-
 ## Descripción del CSS Utilizado
 El diseño de `src/App.css` no fue copiado a ciegas; utiliza las siguientes técnicas avanzadas:
 *   **CSS Grid (`display: grid`):** Aplicado en `.catalog` para generar una cuadrícula inteligente de tarjetas. Con `repeat(auto-fill, minmax(280px, 1fr))` logramos que el catálogo sea responsivo sin usar Media Queries: las columnas se crean y se acomodan solas según el tamaño de la pantalla.
