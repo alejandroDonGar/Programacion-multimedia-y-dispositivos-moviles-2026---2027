@@ -309,10 +309,6 @@ La captura final de arriba corresponde al filtro de precio activo: el contador m
 
 ---
 
-# Dificultades y soluciones
-
-> ✍️ *Para completar con tus palabras:* qué error te costó más resolver y cómo lo solucionaste.
-
 # Reflexión final
 
 1. **¿Qué archivo conecta el HTML con App?** `src/main.tsx`: importa `App` y lo renderiza dentro del `<div id="root">` de `index.html` con `createRoot`.
