@@ -57,6 +57,8 @@ function App() {
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [onlyUnder15, setOnlyUnder15] = useState(false);  
 
+  // Este filtrado secuencial permite terner tantos parametros como queramos.
+  // El resultado se guardará todo dentro de una misla lista, independientemente de que botones/opciones esten activos.
   const filteredGames = games
     .filter((game) => (onlyAvailable ? game.available : true))
     .filter((game) => (onlyUnder15 ? game.price < 15 : true));
