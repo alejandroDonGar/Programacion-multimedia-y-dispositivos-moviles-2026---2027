@@ -16,7 +16,10 @@ export default function GameCard({
             <h2>{title}</h2>
             <p>Género: {genre}</p>
             <p>Precio: {price}</p>
-            <p>{available ? "Disponible" : "No disponible"}</p>
+            <button className={available ? "available" : "unavailable"}>
+                {available ? "Comprar" : "Agotado"}
+            </button>
+
         </article>
     )
 }

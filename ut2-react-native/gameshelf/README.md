@@ -76,39 +76,41 @@
 
 **¿Qué comandos aparecen en scripts?**
 
-* 
+* Aparecen **`"dev": "vite"`**, **`"build": "tsc -b && vite build"`**, **`"lint": "eslint ."`** y **`"preview": "vite preview"`**
 
 ### tsconfig.json
 
 **¿Qué indica “ts”? ¿Necesitas editarlo hoy?**
 
-* 
+* Indica **TypeScript**. Es un lenguaje de programación basado en JavaScript, pero que añade reglas y ayudas visuales para que no cometas errores al escribir el código.
 
-* 
+* **No**, no hace falta tocarlo. Solo tendria que editarlo si quisiera cambiar la forma en que se organiza, compila o conecta tu proyecto.
 
 ### vite.config.ts
 
 **¿Qué nombre de herramienta aparece?**
 
-* 
+* Aparece **`vite`**
 
 ### public/ y src/assets/
 
 **¿Qué recursos encuentras?**
 
-* 
+* En estas dos carpetas lo que encontramos son los recursos gráficos que va a genera o añadir la pagina a su layout como Favicons, o pngs que se van a mostrar a lo largo de la página.
 
 ### node_modules/
 
 **¿Qué contiene? ¿Por qué no se sube?**
 
-* 
+* La carpeta contiene los módulos y librerías externas que el proyecto necesita para funcionar, como los paquetes de código que se descargan de internet ya sean, **`React`**, **`typeScript`**, **`vite`**, etc.
+
+* No se suebe porque es **innecesario, ineficiente y una mala practica** por el **peso masivo** de todas las librerias, ya están registradas en **`package.json`**, la incompatibilidad con otros sitemas y porque es facilmente recreable por otros programadores usando **`npm install`** en su máquina.
 
 ### .gitignore
 
 **¿Qué archivos o carpetas ignora Git?**
 
-* 
+* El **`.gitignore`** no sube a **github** los archivos que no queremos que se vean en el repositorios por otros usuarios.
 
 ## Componentes de los archivos
 
@@ -116,15 +118,48 @@ Dentro de cada archivo usaremos diferentes lenguajes,  componentes como funcione
 
 | Conceptos | Funcionalidad |
 |-|-|
-| JavaScript |  |
-| TypeScript |  |
-| JSX |  |
-| TSX |  |
-| Componente |  |
-| Props |  |
-| Función |  |
-| Parámetro |  |
-| Evento |  |
-| Manejador |  |
-| Estado |  |
-| Callback |  |
+| JavaScript | Lenguaje de programación base de la web que permite dar interactividad y lógica a las aplicaciones |
+| TypeScript | Superconjunto de JavaScript que añade **tipado estático** para detectar errores en el código antes de ejecutarlo |
+| JSX | Extensión de la sintaxis de JavaScript que permite escribir estructuras similares a **HTML directamente dentro de código JS** |
+| TSX | Es exactamente lo mismo que JSX, pero adaptado para trabajar bajo las reglas y el **soporte de tipos de TypeScript** |
+| Componente | Bloque de código **reutilizable e independiente** (normalmente una función) que define una parte de la interfaz de usuario |
+| Props | Argumentos u objetos que se pasan a un componente desde el exterior para **configurarlo o enviarle datos** |
+| Función | Bloque de código diseñado para realizar una tarea específica cuando es invocado o llamado |
+| Parámetro | La **variable o hueco** que se define en la declaración de una función para recibir los datos de entrada |
+| Evento | Una acción o suceso detectado por el navegador provocado por el usuario (como hacer **`click`**, escribir o hacer scroll). |
+| Manejador | (Handler) La **función específica que se ejecuta** como respuesta inmediata cuando ocurre un evento determinado. |
+| Estado | Memoria interna de un componente que **guarda datos que pueden cambiar** y que, al modificarse, obligan a redibujar la pantalla. |
+| Callback | Una **función que se pasa a otra función como argumento** para ser ejecutada más tarde (normalmente al terminar una tarea). |
+
+## Fundamentos de CSS
+
+### ¿Qué es CSS?
+**CSS (Cascading Style Sheets)** o Hojas de Estilo en Cascada es el lenguaje utilizado para describir la presentación, el formato y el diseño visual de los elementos estructurados en una página web. Separar el contenido (TSX/HTML) del diseño (CSS) permite mantener un código limpio y escalable.
+
+### ¿Qué es un Selector CSS?
+Un **selector** es el patrón o texto que se utiliza en el archivo CSS para decirle al navegador **a qué elementos del documento queremos aplicar los estilos**. Por ejemplo:
+*   Un selector de etiqueta (`main`, `h1`) apunta a todos los elementos que usen esa etiqueta.
+*   Un selector de clase (`.catalog`, `.card`) apunta a los elementos que tengan asignada esa clase en particular.
+
+### ¿Qué es una Propiedad CSS?
+Una **propiedad** es el aspecto o característica específica del elemento que queremos modificar (como su color, tamaño, margen o sistema de distribución). Cada propiedad va acompañada de un **valor**. Por ejemplo, en `color: red;`, `color` es la propiedad y `red` es el valor.
+
+## Integración de Estilos en este Proyecto
+
+### ¿Dónde escribí los estilos?
+Escribí las reglas de diseño dentro del archivo **`src/App.css`**. Este archivo contiene CSS estándar y moderno, sin mezclar código de TypeScript ni etiquetas JSX.
+
+### ¿Cómo conecté una clase del TSX con su regla CSS?
+La conexión se produce en dos pasos:
+1.  **Vínculo en el código (Importación):** En el archivo `src/App.tsx` se añadió la línea `import './App.css'`. Esto le avisa a React y a la herramienta de compilación (Vite) que cargue e inyecte los estilos de ese archivo en toda la aplicación.
+2.  **Relación de Nombres (JSX vs CSS):** 
+    *   En el archivo **TSX**, los elementos reciben un nombre identificador mediante el atributo **`className`** (por ejemplo: `className="catalog"` o `className="card"`). Se usa `className` y no `class` porque la palabra `class` está reservada nativamente por JavaScript.
+    *   En el archivo **CSS**, nos referimos a ese identificador anteponiendo un **punto (`.`)**, quedando como `.catalog` o `.card`. El navegador lee el punto, entiende que busca una clase e inyecta todas las propiedades visuales descritas dentro de las llaves al elemento TSX correspondiente.
+
+---
+
+## Descripción del CSS Utilizado
+El diseño de `src/App.css` no fue copiado a ciegas; utiliza las siguientes técnicas avanzadas:
+*   **CSS Grid (`display: grid`):** Aplicado en `.catalog` para generar una cuadrícula inteligente de tarjetas. Con `repeat(auto-fill, minmax(280px, 1fr))` logramos que el catálogo sea responsivo sin usar Media Queries: las columnas se crean y se acomodan solas según el tamaño de la pantalla.
+*   **CSS Flexbox (`display: flex`):** Aplicado dentro de `.card` de forma vertical (`flex-direction: column`) para alinear perfectamente los títulos, géneros, precios y botones de forma simétrica.
+*   **Variables CSS (`var(--...)`):** Se reutilizan los estilos de color
