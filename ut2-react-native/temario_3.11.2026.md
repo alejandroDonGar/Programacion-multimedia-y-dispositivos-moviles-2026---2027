@@ -141,3 +141,100 @@ No hay una respuesta única: cada caso se puede resolver de varias maneras. Lo q
 - Web adaptable → app web → PWA → nativa → multiplataforma (Flutter, React Native).
 - PWA ≠ nativa: web dentro del navegador frente a app del SO con acceso completo.
 - Las 4 preguntas: ¿instalar?, ¿sin conexión?, ¿funciones del dispositivo?, ¿pantalla pequeña?
+
+---
+Temario 5.11.2026 (Expandir en detalle. Hay errores por la velocidad de escritura)
+
+Para ver como construir una app necesitaremos saber que tareas resuleve, donde se usa y que funciones del disp necesita
+
+Tecnologias necesarias para desaroolar en ios y android:
+
+SI una emp quiere publicar su app tanto en and y ios que cosas tendria que decidir?
+
+1 - ver que sistema querriamos cubrir 
+2 - si se desarrollará una version especifica para cada uno o si compratiriamos parte del codigo.
+
+"voy a ahcer la app en react natie" esta nombramndo una tech de desarrollo no todas las demas partes del proceso
+
+Dividimos en 5 palabras:
+Plataforma - lenguaje - framwork - sdk - id
+
+plataforma -> Sistema para el que se crea o ejecuta la app -> Android o iOS Responde a: para que sistema?
+lenguaje -> Forma de escribir las instrucciones del programa -> Kotlin, Swift, JS/TS, Dart Responde a: para que lenguaje?
+framwork -> conjunto de herramientas y piezas que ayuda a construir la app -> React Native o Flutter Responde a: Que conjunto de piezas y reglas?
+sdk -> herramientas y biblioteca que permiten crear y probar para una plataforma -> Android SDK o iosSDK Responde a: Que herramientas necesito para crear y probar?
+ide -> Programa de ordenador donde se escribe organiza y depura el codigo -> Android stuido o xcode Responde a: En que programa programo?
+
+una app nativa android puede escribirse en hotlin utilizar herrmaientas d enadroid, trabajarse en And Studio
+
+Apple -> Swift, xcode
+Android -> Android Studio y herramientas oficiales para crear
+
+ya dijimos que una app nadtiva se desaroolo espeficiamente para x sistema op
+encontes, tenemos que elegir una ruta nativa por la que desarorollar
+
+Android -> Kotlin una opcion moderna y comumente usada para escribir, compilar probar y depurar
+IOS -> Switf lenguaje habiutal y Xcode es el entorno de Apple para crear.
+
+ventajas
+integra directa con las funciones del sistema
+uso de componenets y patrones
+control detallado de el comportamiento
+
+cons
+para cubrir ambos, es necesario mantener dos implementaciones
+los cambios se tendran que repetir en ambas
+
+nativa != mejor para cualquier app. Siginifa que se trabaja de manera especifica para la plataforma
+
+ruta multiplataforma:
+**1 - React native**
+    usa JS / TY y conceptos de react
+    organizar en componentes como view y text
+    no se escribe con html
+    conecta sus componentes con elementos visuales de los os
+
+    <div>hola</div>
+    <view><text>hola</text></view>
+
+**2 - Flutter**
+    usa dart
+    proporciona su propio conjunbto de herraminetas
+    permite crear apps con codigo compartido entre plataformas
+    uso de widgets
+
+ventaja de multi, compartir codigo ahorra trabajo pero no garantiza que una app se comporte igual en todos los moiles. Hay que probarla en plataformas y anotar las diferencias.
+
+Las palabras web, nativa y multi describen rutas distintas. React N y Flu son herramientas multi,. pero no funciiona ingual. Y una pWA sigue sineod una app web aunque pueda instalarse en ciertos dispositivos.
+
+¿La aapp se podria resolver con una web/PWA?
+¿Necesita funciones del disp?
+¿Debe cubrir android, IOS o ambos?
+¿El equipo ya conce react, kotlin, swift o dart?
+¿Que habra que probar en cada plat?
+
+Caso A:
+Una asociacion publica eventos, horarios y ubicaciones y noticias. La mayoria de personas entra desde enlaces que recibe o desde un buscador. No se necesita camara ni trabajar sin conexion
+- si
+- no
+- no, funciona en web
+- no, pero podrian
+- aspecto de la web, probar por si hay bugs en ambos. 
+
+Caso B:
+El alumnado guarda tareas, recibe avisos y quiere consultar sus notas deurante trayectos con conexion irregular. El centro desea que funcione en and y ios
+- PWA(corregido proque antes teniamos app multi por lo que las respuestar siguientes estan basadas en si fuera una app multi)
+- acceso a almacenamiento, internet, notificaciones
+- ambas
+- conocer lo basico
+- el comportamiento en ambos os
+
+Caso C:
+La persona registra recorridos usando ubicacion, consulta el resultado despues y quiere que la app este disponible en and e ios
+- no, por si acaso
+- ubicacion y almacenamiento
+- ambas
+- conocer lo basico
+- el comportamiento en ambos os
+
+(pendiente de corregir)
