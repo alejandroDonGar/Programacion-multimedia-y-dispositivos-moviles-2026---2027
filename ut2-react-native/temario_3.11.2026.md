@@ -147,7 +147,7 @@ Temario 5.11.2026 (Expandir en detalle. Hay errores por la velocidad de escritur
 
 Para ver como construir una app necesitaremos saber que tareas resuleve, donde se usa y que funciones del disp necesita
 
-Tecnologias necesarias para desaroolar en ios y android:
+***Tecnologias necesarias para desaroolar en ios y android:***
 
 SI una emp quiere publicar su app tanto en and y ios que cosas tendria que decidir?
 
@@ -156,7 +156,7 @@ SI una emp quiere publicar su app tanto en and y ios que cosas tendria que decid
 
 "voy a ahcer la app en react natie" esta nombramndo una tech de desarrollo no todas las demas partes del proceso
 
-Dividimos en 5 palabras:
+**Dividimos en 5 palabras:**
 Plataforma - lenguaje - framwork - sdk - id
 
 plataforma -> Sistema para el que se crea o ejecuta la app -> Android o iOS Responde a: para que sistema?
@@ -187,7 +187,7 @@ los cambios se tendran que repetir en ambas
 
 nativa != mejor para cualquier app. Siginifa que se trabaja de manera especifica para la plataforma
 
-ruta multiplataforma:
+***ruta multiplataforma:***
 **1 - React native**
     usa JS / TY y conceptos de react
     organizar en componentes como view y text
@@ -207,13 +207,15 @@ ventaja de multi, compartir codigo ahorra trabajo pero no garantiza que una app 
 
 Las palabras web, nativa y multi describen rutas distintas. React N y Flu son herramientas multi,. pero no funciiona ingual. Y una pWA sigue sineod una app web aunque pueda instalarse en ciertos dispositivos.
 
-¿La aapp se podria resolver con una web/PWA?
-¿Necesita funciones del disp?
-¿Debe cubrir android, IOS o ambos?
-¿El equipo ya conce react, kotlin, swift o dart?
-¿Que habra que probar en cada plat?
+**Actividad**
 
-Caso A:
+**¿La aapp se podria resolver con una web/PWA?**
+**¿Necesita funciones del disp?**
+**¿Debe cubrir android, IOS o ambos?**
+**¿El equipo ya conce react, kotlin, swift o dart?**
+**¿Que habra que probar en cada plat?**
+
+*Caso A:*
 Una asociacion publica eventos, horarios y ubicaciones y noticias. La mayoria de personas entra desde enlaces que recibe o desde un buscador. No se necesita camara ni trabajar sin conexion
 - si
 - no
@@ -221,7 +223,7 @@ Una asociacion publica eventos, horarios y ubicaciones y noticias. La mayoria de
 - no, pero podrian
 - aspecto de la web, probar por si hay bugs en ambos. 
 
-Caso B:
+*Caso B:*
 El alumnado guarda tareas, recibe avisos y quiere consultar sus notas deurante trayectos con conexion irregular. El centro desea que funcione en and y ios
 - PWA(corregido proque antes teniamos app multi por lo que las respuestar siguientes estan basadas en si fuera una app multi)
 - acceso a almacenamiento, internet, notificaciones
@@ -229,7 +231,7 @@ El alumnado guarda tareas, recibe avisos y quiere consultar sus notas deurante t
 - conocer lo basico
 - el comportamiento en ambos os
 
-Caso C:
+*Caso C:*
 La persona registra recorridos usando ubicacion, consulta el resultado despues y quiere que la app este disponible en and e ios
 - no, por si acaso
 - ubicacion y almacenamiento
@@ -238,3 +240,64 @@ La persona registra recorridos usando ubicacion, consulta el resultado despues y
 - el comportamiento en ambos os
 
 (pendiente de corregir)
+
+***UI y UX***
+UI user interface
+UX user experience
+
+UI
+son loe elementos que ve el usuer que controla la app, textos, botones, campos, iconos, etc (lo que el user ve)
+
+UX
+es como vivi la persona el uso completo de la app. como se siente durante el uso, cuandole cuestra y demas (como el user la usa)
+
+No importa si una app es preciosa si nadie sabe para que sirve el problema no esta solucionado.
+
+**En un movil es imprtante que la intercacion es tactil, la persona puede usar el disp con una mano, con prisa con movimientos o con mucha luz:**
+1 - Hace que los contr se puedan tocar comodamente. Un boton diminuto o pegado a otro facilita los errores.
+2 - Dejar clasro que se puede tocar. Los botones deben parecer controles
+3 - Dar respuestas despues de la accion. Si se pulsa un boton que haya algo que lo confirme. Feedback
+4 - Evitar depender del puntero o el hover. En pantalla tactil no hay raton.
+5 - Perdir confirmaciones para acciones importantes.
+6 - Mantener la acciones frecuentes faciles de encontrar.
+
+en una web los botnes son mas visibles por el movimiento del raton. En movil no podemos. NEcesitamos etiquetas claras descriptivas para los botones.
+
+siempre tener feedback. Progreso, carga o error
+
+No existe un unico movil. Cambian el ancho, alto de la pantalla. La orientazion y el tamaño de texto. Una interfaz debe organizarse para que siga siendo util en esas condiciones.
+
+**Diesño adaptable o responsive.**La dispovion que se reorganiza sola
+**Priorizar el contenido.** Mostrar primero lo que ayuda a completar la tarea evitando relleno con elementos secundarios. 
+**Orientazion.** Uso vertical y horizontal
+**Escalado de texto.** posibilidad de aumentar el tamao de letra desde los ajustes del dispositivo o de la app. 
+
+Una agenda escolar puede mostrar un evento como una tarjeta completa en un telefono estrecho. En una pantalla ma ancha podria presentar la info junto a otros eventos. El contenido importante debe seguir siendo accesible en ambas situaciones.
+
+Adapta no es hacer que todo quepa sino que mostrar, donde y como se vera en x condicion
+
+***Accesibilidad:***
+Consiste en diseñar la app para personas con diferentes condiciones, para que la comprenda y utilizen. No es una funcion para un grupo prquelio de usuairo. Tambien ayuida a alguien que tiene una lesion temporal, utiliza el movil bajo el sol, no puede escuchar un aviso o sosteiene el movil con una sola mano. 
+
+**5 principios** de la accesibilidad
+**Contrase suficiente.** que el trexo y los controles se distingan del fondo
+**No depender solo del color.** si una tarea esta pendiente en rojo y completada en verde, añade tambien palabras, iconos y otra señal
+**Texto que se pueda ampliar.** La app debe seguir siento util cuando la persona aumenta la letra.
+**Etiquetas comprensibles.** Un icono de lupa puede necesitar el nombre Buscar especialmente para texnologias de asistencia.
+**Lectores de pantalla y navegacion accesible.** Los elementso deben tener nombres y orden comprensibles para quien escucha la interfaz o navega con controles distintos al tacto directo.
+
+Guias WCAG (Explicar en profuncidda, la legalidad, necesitades obligarias y demas campos)
+
+**Actividad**
+La pantalla principal de X sitio tiene un texto gris claro sobre fondo blanco. En la esquina superior hay un icono pequño de tres lineas sin texto. Los eventos aparecene con la letra pequeña. Cada evento tiene un punto rojo o verde para indicar sie sta pendiente o completado, pero no aparece ninguna palabra. Para eliminar un evento hay que deslizarlo hacia un lado; no hay otro boton ni explicacion. Al guarda un cambio, la pantalla no muestra informacion.
+
+5 problemas.
+Fondo blanco con texto gris claro -> Poco contraste, cambiar el color de la fuente, del fondo o ambos
+Icono de tres lineas -> Posible texto complementario o un icono mas representativo de que el boton despliqga un menu de algun tipo, tanto en front como en el codigo como un tag.
+Los puntos rojos y verdes -> Añadir descripciones o textos que indique la funcionalidad
+Deslizar para borrar -> Pantallas, popups o demas tipo de widgets que indique que estamos haciendo, que va a ocuyrrir y dar la opcion de cancelar o continuar.
+No mostrar confirmacon al guardar cambios -> Pues que muestre confirmacion, error o proceso. 
+
+Diseñar para movil sinifica ayuda a la persona a completar su tarea en pantalla tactil en contextos distinto.
+
+Fin de la clase 5.11.2026
