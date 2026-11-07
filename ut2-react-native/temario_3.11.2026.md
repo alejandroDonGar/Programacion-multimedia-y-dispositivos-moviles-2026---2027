@@ -1,6 +1,6 @@
 # Del React web a la app móvil: qué cambia al diseñar para móvil
 
-> Clase del 03/11/2026. Introducción al diseño antes de empezar a crear la app móvil (siguiente paso de la UT2: React Native con Expo).
+> Clases del 03/11/2026 (apartados 1-4) y del 05/11/2026 (apartados 5-7). Introducción al diseño antes de empezar a crear la app móvil (siguiente paso de la UT2: React Native con Expo).
 
 Hasta ahora hemos hecho React en el navegador (Vite + TypeScript: `mi-primera-app`, GameShelf). Antes de pasar al móvil conviene separar dos preguntas que se suelen mezclar:
 
@@ -133,6 +133,221 @@ No hay una respuesta única: cada caso se puede resolver de varias maneras. Lo q
 
 ---
 
+## 5. Tecnologías para desarrollar en Android e iOS (05/11)
+
+> Clase del 05/11/2026 (sesiones 1 y 2).
+
+Para decidir cómo construir una app primero hay que saber **qué tareas resuelve, dónde se usa y qué funciones del dispositivo necesita** (las preguntas del apartado 4). Después viene la parte técnica. Si una empresa quiere publicar su app en Android y en iOS, tiene que decidir:
+
+1. **Qué sistemas quiere cubrir**: solo Android, solo iOS o los dos.
+2. **Si hará una versión específica para cada uno** (dos apps nativas) **o compartirá parte del código** (multiplataforma).
+
+Decir «voy a hacer la app en React Native» solo nombra **una** de las piezas del proceso: falta decir para qué plataforma, con qué lenguaje, con qué SDK se compila y prueba, y en qué programa se escribe.
+
+### 5.1 Las 5 palabras: plataforma, lenguaje, framework, SDK e IDE
+
+| Palabra | Qué es | Ejemplos | Responde a… |
+|---|---|---|---|
+| **Plataforma** | Sistema para el que se crea y en el que se ejecuta la app | Android, iOS | ¿Para qué sistema? |
+| **Lenguaje** | Forma de escribir las instrucciones del programa | Kotlin, Swift, JavaScript/TypeScript, Dart | ¿En qué lenguaje? |
+| **Framework** | Conjunto de herramientas, piezas y reglas que ayuda a construir la app | React Native, Flutter | ¿Con qué piezas y reglas? |
+| **SDK** (*Software Development Kit*) | Herramientas y bibliotecas para crear y probar apps para una plataforma (compilador, emulador, API del sistema) | Android SDK, iOS SDK | ¿Qué necesito para crear y probar? |
+| **IDE** (*Integrated Development Environment*) | Programa donde se escribe, organiza y depura el código | Android Studio, Xcode (también VS Code) | ¿En qué programa programo? |
+
+Ejemplo: una app nativa de Android puede escribirse en **Kotlin** (lenguaje), compilarse y probarse con el **Android SDK** y trabajarse en **Android Studio** (IDE), para la plataforma **Android**. Una app de React Native usaría **TypeScript** + el framework **React Native**, pero seguiría necesitando el Android SDK y el iOS SDK por debajo para generar cada versión.
+
+> ➕ **Ampliación:** para compilar y publicar la versión de iOS hace falta **Xcode, que solo funciona en macOS**. Con Expo (lo que usaremos en clase) se puede probar en un iPhone real con la app **Expo Go** sin tener un Mac.
+
+### 5.2 Ruta nativa
+
+Una app nativa se desarrolla **específicamente para un sistema operativo**, así que hay que elegir una ruta por plataforma:
+
+| Plataforma | Lenguaje habitual | IDE y herramientas |
+|---|---|---|
+| **Android** | **Kotlin** (moderno y el recomendado por Google; antes, Java) | Android Studio + Android SDK |
+| **iOS** | **Swift** | Xcode + iOS SDK (entorno de Apple) |
+
+| Ventajas | Inconvenientes |
+|---|---|
+| Integración directa con las funciones del sistema (cámara, GPS, notificaciones, segundo plano) | Para cubrir Android e iOS hay que **mantener dos implementaciones** |
+| Usa los componentes y patrones propios de cada plataforma (la app «se siente» del sistema) | Cada cambio **se repite en las dos** (más tiempo y más coste) |
+| Control detallado del comportamiento y del rendimiento | Hacen falta conocimientos de dos lenguajes y dos entornos |
+
+> Nativa **no significa «mejor para cualquier app»**: significa que se trabaja de forma específica para una plataforma. Si la app no necesita nada especial del dispositivo, puede no compensar el doble trabajo.
+
+### 5.3 Ruta multiplataforma
+
+| | **React Native** | **Flutter** |
+|---|---|---|
+| Lenguaje | JavaScript / TypeScript | Dart |
+| Idea | Conceptos de React (componentes, props, estado) | Todo son **widgets** |
+| Interfaz | Sus componentes (`View`, `Text`…) se conectan con los **elementos visuales nativos** de cada SO | **Dibuja su propia interfaz** con su motor gráfico |
+| Dónde lo vemos | Esta asignatura (con Expo) | Desarrollo de Interfaces |
+
+En React Native **no se escribe HTML**: en lugar de etiquetas web se usan componentes propios.
+
+```tsx
+// React web (lo que hemos hecho con Vite)
+<div>hola</div>
+
+// React Native
+<View><Text>hola</Text></View>
+```
+
+> ✏️ **Corrección:** en las notas puse `<view><text>`. Los componentes de React Native van **con mayúscula** (`View`, `Text`) y se importan de `react-native`, como cualquier componente propio (`Saludo.tsx`).
+
+Compartir código **ahorra trabajo**, pero **no garantiza** que la app se comporte igual en todos los móviles: hay que **probarla en cada plataforma** y anotar las diferencias (permisos, teclado, gestos de «atrás», tamaños de pantalla…).
+
+### 5.4 No mezclar los términos
+
+- **Web, nativa y multiplataforma** describen **rutas distintas** de desarrollo.
+- **React Native y Flutter** son herramientas multiplataforma, pero **no funcionan igual** (componentes nativos frente a dibujo propio).
+- Una **PWA sigue siendo una app web**, aunque pueda instalarse en algunos dispositivos.
+
+### 5.5 Actividad: elegir la ruta
+
+Preguntas para cada caso:
+
+1. ¿Se podría resolver con una web o una PWA?
+2. ¿Necesita funciones del dispositivo?
+3. ¿Debe cubrir Android, iOS o ambos?
+4. ¿El equipo ya conoce React, Kotlin, Swift o Dart?
+5. ¿Qué habrá que probar en cada plataforma?
+
+> Las respuestas están **pendientes de corregir en clase**.
+
+**Caso A:** *una asociación publica eventos, horarios, ubicaciones y noticias. La mayoría entra desde enlaces o desde un buscador. No necesita cámara ni funcionar sin conexión.*
+
+1. **Sí**: basta con una web (adaptable).
+2. No.
+3. No hace falta elegir: una web funciona en los dos.
+4. No es necesario, aunque podrían usarlo.
+5. Que la web se vea y funcione bien en los navegadores de Android e iOS.
+
+**Caso B:** *el alumnado guarda tareas, recibe avisos y consulta sus notas en trayectos con conexión irregular. El centro quiere que funcione en Android e iOS.*
+
+1. **PWA** (en clase empezamos respondiendo «app multiplataforma» y lo cambiamos; las respuestas 2-5 valen para las dos opciones).
+2. Almacenamiento local, conexión a internet y notificaciones.
+3. Ambos.
+4. Conocer lo básico de la tecnología elegida.
+5. El comportamiento en los dos sistemas, sobre todo **sin conexión** y con los **avisos**.
+
+> ➕ **Ampliación:** las notificaciones *push* de una PWA en iOS solo funcionan si se ha **instalado en la pantalla de inicio** (desde iOS 16.4). Es justo lo que habría que probar en cada plataforma; si los avisos son críticos, una app multiplataforma es la opción más segura.
+
+**Caso C:** *la persona registra recorridos con la ubicación, consulta el resultado después y quiere la app en Android e iOS.*
+
+1. Mejor que no (respondimos «no, por si acaso»).
+2. Ubicación y almacenamiento.
+3. Ambos.
+4. Conocer lo básico.
+5. El comportamiento en los dos sistemas.
+
+> ➕ **Ampliación:** el «por si acaso» tiene un motivo concreto: el navegador puede pedir la ubicación, pero **registrar un recorrido con la pantalla apagada o la app en segundo plano** solo es fiable en nativa o multiplataforma (ver el caso C del apartado 4).
+
+---
+
+## 6. UI y UX
+
+| | **UI** (*User Interface*, interfaz de usuario) | **UX** (*User Experience*, experiencia de usuario) |
+|---|---|---|
+| Qué es | Los elementos que la persona **ve y controla**: textos, botones, campos, iconos, colores | Cómo **vive** la persona el uso completo de la app: si entiende qué hacer, cuánto le cuesta, cómo se siente |
+| Pregunta | ¿Qué ve el usuario? | ¿Cómo la usa y qué tal le va? |
+
+No importa que una app sea preciosa (buena UI): **si nadie entiende para qué sirve o cómo se usa, el problema no está resuelto** (mala UX).
+
+### 6.1 Pautas para la interacción táctil
+
+En un móvil la interacción es táctil y la persona puede usarlo **con una mano, con prisa, en movimiento o con mucha luz**:
+
+| # | Pauta | Por qué |
+|---|---|---|
+| 1 | Controles **cómodos de tocar** | Un botón diminuto o pegado a otro provoca errores |
+| 2 | Dejar claro **qué se puede tocar** | Los botones deben parecer botones |
+| 3 | Dar **respuesta después de cada acción** (*feedback*) | Si se pulsa algo, que se note: progreso, carga, confirmación o error |
+| 4 | **No depender del puntero ni del `hover`** | En una pantalla táctil no hay ratón |
+| 5 | **Pedir confirmación** en acciones importantes | Borrar o pagar por error tiene consecuencias |
+| 6 | Acciones frecuentes **fáciles de encontrar** | Se usan con prisa y a menudo |
+
+En una web con ratón, el cursor cambia al pasar por encima de lo que se puede pulsar; en el móvil no existe esa pista, así que hacen falta **etiquetas claras y descriptivas** en los botones.
+
+> ➕ **Ampliación:** tamaños mínimos recomendados para zonas táctiles: **48 × 48 dp** en Android (Material Design) y **44 × 44 pt** en iOS (Apple). WCAG 2.2 fija como mínimo **24 × 24 px** (criterio 2.5.8).
+
+### 6.2 Diseño adaptable
+
+No existe un único móvil: cambian el **ancho y el alto** de la pantalla, la **orientación** y el **tamaño de texto** que elige cada persona. La interfaz tiene que seguir siendo útil en todas esas condiciones.
+
+| Idea | Qué significa |
+|---|---|
+| **Diseño adaptable** (*responsive*) | La disposición se reorganiza sola según el espacio |
+| **Priorizar el contenido** | Mostrar primero lo que ayuda a completar la tarea; evitar el relleno con elementos secundarios |
+| **Orientación** | Que funcione en vertical y en horizontal |
+| **Escalado de texto** | Que se pueda aumentar la letra desde los ajustes del dispositivo o de la app sin que se rompa la pantalla |
+
+Ejemplo: una agenda escolar puede mostrar cada evento como una tarjeta completa en un teléfono estrecho y, en una pantalla más ancha, colocarlo junto a otros eventos. El contenido importante sigue accesible en las dos situaciones.
+
+> **Adaptar no es hacer que todo quepa**, sino decidir **qué se muestra, dónde y cómo** en cada condición.
+
+---
+
+## 7. Accesibilidad
+
+Diseñar la app para que la **comprendan y la usen personas con condiciones diferentes**. No es una función para un grupo pequeño: también ayuda a quien tiene una **lesión temporal**, usa el móvil **bajo el sol**, **no puede escuchar** un aviso o lo sostiene **con una sola mano**.
+
+### 7.1 Los 5 principios vistos en clase
+
+| Principio | Qué pide | Ejemplo |
+|---|---|---|
+| **Contraste suficiente** | Que textos y controles se distingan del fondo | Nada de gris claro sobre blanco |
+| **No depender solo del color** | Añadir otra señal además del color | Pendiente/completada en rojo/verde + texto o icono |
+| **Texto ampliable** | Que la app siga siendo útil con la letra aumentada | Sin textos cortados ni solapados |
+| **Etiquetas comprensibles** | Que cada control tenga un nombre claro | Una lupa necesita el nombre «Buscar» para las tecnologías de asistencia |
+| **Lectores de pantalla y navegación accesible** | Elementos con nombre y orden lógico | TalkBack (Android) y VoiceOver (iOS) leen la interfaz en ese orden |
+
+### 7.2 Las pautas WCAG
+
+Las **WCAG** (*Web Content Accessibility Guidelines*) son las pautas de accesibilidad del **W3C**. Aunque nacieron para la web, se aplican también a las apps móviles. Versión actual: **WCAG 2.2** (2023); la normativa europea sigue tomando como referencia la 2.1.
+
+Se organizan en **4 principios** (siglas **POUR**):
+
+| Principio | Significa | Relación con los 5 de clase |
+|---|---|---|
+| **Perceptible** | La información se puede percibir (ver u oír) | Contraste, no depender del color, texto ampliable |
+| **Operable** | Los controles se pueden usar (táctil, teclado, sin límites de tiempo imposibles) | Zonas táctiles grandes, alternativas a los gestos |
+| **Comprensible** | Se entiende la información y el funcionamiento | Etiquetas claras, mensajes de error útiles |
+| **Robusto** | Funciona con distintas tecnologías, incluidas las de asistencia | Lectores de pantalla |
+
+Cada criterio tiene un **nivel de conformidad**: **A** (mínimo), **AA** (el que se exige normalmente) y **AAA** (el más alto). Ejemplos de nivel AA: contraste de **4,5:1** en texto normal y **3:1** en texto grande; texto ampliable al **200 %** sin perder contenido.
+
+**¿Es obligatorio?**
+
+| Norma | A quién obliga |
+|---|---|
+| **Real Decreto 1112/2018** (España) | Webs y **apps móviles del sector público**: deben cumplir la norma **UNE-EN 301 549**, que equivale a **WCAG 2.1 nivel AA** |
+| **Acta Europea de Accesibilidad** (Directiva (UE) 2019/882, en España **Ley 11/2023**) | Desde el **28/06/2025**, también a muchos **productos y servicios privados**: comercio electrónico, banca, transporte, libros electrónicos… (con excepciones para microempresas de servicios) |
+
+> ➕ **Para el proyecto final:** Tenue ya se plantea con **WCAG 2.1 AA**; si sus clientes son ayuntamientos, es directamente obligatorio por el RD 1112/2018.
+
+### 7.3 Actividad: 5 problemas de accesibilidad
+
+*La pantalla principal tiene texto gris claro sobre fondo blanco; arriba hay un icono pequeño de tres líneas sin texto; los eventos tienen la letra pequeña y un punto rojo o verde (pendiente/completado) sin ninguna palabra; para borrar un evento hay que deslizarlo, sin botón ni explicación; al guardar un cambio no aparece nada.*
+
+| Problema | Por qué es un problema | Solución |
+|---|---|---|
+| Texto gris claro sobre blanco | Poco contraste: no se lee al sol ni con baja visión | Cambiar el color del texto, del fondo o ambos hasta cumplir 4,5:1 |
+| Icono de tres líneas sin texto | No se sabe qué hace y el lector de pantalla no tiene qué leer | Añadir el texto «Menú» visible o, al menos, como etiqueta accesible en el código (`accessibilityLabel` en React Native, `Semantics`/`tooltip` en Flutter) |
+| Letra pequeña | Difícil de leer | Tamaño base mayor y respetar el escalado de texto del sistema |
+| Punto rojo/verde sin palabras | Depende solo del color (daltonismo, lectores de pantalla) | Añadir texto («Pendiente»/«Completado») o un icono distinto |
+| Deslizar para borrar, sin alternativa | Gesto oculto y no apto para todos | Botón visible de borrar + **confirmación** con opción de cancelar (o «Deshacer») |
+| Sin respuesta al guardar | No hay *feedback*: ¿se ha guardado? | Mostrar confirmación, progreso o error (p. ej. un `SnackBar`, como en la tienda de Interfaces) |
+
+> ✏️ **Corrección:** el enunciado describe **seis** problemas aunque pedía cinco: la **letra pequeña** también lo es (falló «texto ampliable»).
+
+### Conclusión
+
+Diseñar para móvil significa **ayudar a la persona a completar su tarea en una pantalla táctil y en contextos distintos**: elegir bien la ruta técnica, cuidar la UX y hacer la app accesible.
+
+---
+
 ## Resumen rápido
 
 - Ver algo en el móvil no indica cómo está hecho.
@@ -141,163 +356,9 @@ No hay una respuesta única: cada caso se puede resolver de varias maneras. Lo q
 - Web adaptable → app web → PWA → nativa → multiplataforma (Flutter, React Native).
 - PWA ≠ nativa: web dentro del navegador frente a app del SO con acceso completo.
 - Las 4 preguntas: ¿instalar?, ¿sin conexión?, ¿funciones del dispositivo?, ¿pantalla pequeña?
-
----
-Temario 5.11.2026 (Expandir en detalle. Hay errores por la velocidad de escritura)
-
-Para ver como construir una app necesitaremos saber que tareas resuleve, donde se usa y que funciones del disp necesita
-
-***Tecnologias necesarias para desaroolar en ios y android:***
-
-SI una emp quiere publicar su app tanto en and y ios que cosas tendria que decidir?
-
-1 - ver que sistema querriamos cubrir 
-2 - si se desarrollará una version especifica para cada uno o si compratiriamos parte del codigo.
-
-"voy a ahcer la app en react natie" esta nombramndo una tech de desarrollo no todas las demas partes del proceso
-
-**Dividimos en 5 palabras:**
-Plataforma - lenguaje - framwork - sdk - id
-
-plataforma -> Sistema para el que se crea o ejecuta la app -> Android o iOS Responde a: para que sistema?
-lenguaje -> Forma de escribir las instrucciones del programa -> Kotlin, Swift, JS/TS, Dart Responde a: para que lenguaje?
-framwork -> conjunto de herramientas y piezas que ayuda a construir la app -> React Native o Flutter Responde a: Que conjunto de piezas y reglas?
-sdk -> herramientas y biblioteca que permiten crear y probar para una plataforma -> Android SDK o iosSDK Responde a: Que herramientas necesito para crear y probar?
-ide -> Programa de ordenador donde se escribe organiza y depura el codigo -> Android stuido o xcode Responde a: En que programa programo?
-
-una app nativa android puede escribirse en hotlin utilizar herrmaientas d enadroid, trabajarse en And Studio
-
-Apple -> Swift, xcode
-Android -> Android Studio y herramientas oficiales para crear
-
-ya dijimos que una app nadtiva se desaroolo espeficiamente para x sistema op
-encontes, tenemos que elegir una ruta nativa por la que desarorollar
-
-Android -> Kotlin una opcion moderna y comumente usada para escribir, compilar probar y depurar
-IOS -> Switf lenguaje habiutal y Xcode es el entorno de Apple para crear.
-
-ventajas
-integra directa con las funciones del sistema
-uso de componenets y patrones
-control detallado de el comportamiento
-
-cons
-para cubrir ambos, es necesario mantener dos implementaciones
-los cambios se tendran que repetir en ambas
-
-nativa != mejor para cualquier app. Siginifa que se trabaja de manera especifica para la plataforma
-
-***ruta multiplataforma:***
-**1 - React native**
-    usa JS / TY y conceptos de react
-    organizar en componentes como view y text
-    no se escribe con html
-    conecta sus componentes con elementos visuales de los os
-
-    <div>hola</div>
-    <view><text>hola</text></view>
-
-**2 - Flutter**
-    usa dart
-    proporciona su propio conjunbto de herraminetas
-    permite crear apps con codigo compartido entre plataformas
-    uso de widgets
-
-ventaja de multi, compartir codigo ahorra trabajo pero no garantiza que una app se comporte igual en todos los moiles. Hay que probarla en plataformas y anotar las diferencias.
-
-Las palabras web, nativa y multi describen rutas distintas. React N y Flu son herramientas multi,. pero no funciiona ingual. Y una pWA sigue sineod una app web aunque pueda instalarse en ciertos dispositivos.
-
-**Actividad**
-
-**¿La aapp se podria resolver con una web/PWA?**
-**¿Necesita funciones del disp?**
-**¿Debe cubrir android, IOS o ambos?**
-**¿El equipo ya conce react, kotlin, swift o dart?**
-**¿Que habra que probar en cada plat?**
-
-*Caso A:*
-Una asociacion publica eventos, horarios y ubicaciones y noticias. La mayoria de personas entra desde enlaces que recibe o desde un buscador. No se necesita camara ni trabajar sin conexion
-- si
-- no
-- no, funciona en web
-- no, pero podrian
-- aspecto de la web, probar por si hay bugs en ambos. 
-
-*Caso B:*
-El alumnado guarda tareas, recibe avisos y quiere consultar sus notas deurante trayectos con conexion irregular. El centro desea que funcione en and y ios
-- PWA(corregido proque antes teniamos app multi por lo que las respuestar siguientes estan basadas en si fuera una app multi)
-- acceso a almacenamiento, internet, notificaciones
-- ambas
-- conocer lo basico
-- el comportamiento en ambos os
-
-*Caso C:*
-La persona registra recorridos usando ubicacion, consulta el resultado despues y quiere que la app este disponible en and e ios
-- no, por si acaso
-- ubicacion y almacenamiento
-- ambas
-- conocer lo basico
-- el comportamiento en ambos os
-
-(pendiente de corregir)
-
-***UI y UX***
-UI user interface
-UX user experience
-
-UI
-son loe elementos que ve el usuer que controla la app, textos, botones, campos, iconos, etc (lo que el user ve)
-
-UX
-es como vivi la persona el uso completo de la app. como se siente durante el uso, cuandole cuestra y demas (como el user la usa)
-
-No importa si una app es preciosa si nadie sabe para que sirve el problema no esta solucionado.
-
-**En un movil es imprtante que la intercacion es tactil, la persona puede usar el disp con una mano, con prisa con movimientos o con mucha luz:**
-1 - Hace que los contr se puedan tocar comodamente. Un boton diminuto o pegado a otro facilita los errores.
-2 - Dejar clasro que se puede tocar. Los botones deben parecer controles
-3 - Dar respuestas despues de la accion. Si se pulsa un boton que haya algo que lo confirme. Feedback
-4 - Evitar depender del puntero o el hover. En pantalla tactil no hay raton.
-5 - Perdir confirmaciones para acciones importantes.
-6 - Mantener la acciones frecuentes faciles de encontrar.
-
-en una web los botnes son mas visibles por el movimiento del raton. En movil no podemos. NEcesitamos etiquetas claras descriptivas para los botones.
-
-siempre tener feedback. Progreso, carga o error
-
-No existe un unico movil. Cambian el ancho, alto de la pantalla. La orientazion y el tamaño de texto. Una interfaz debe organizarse para que siga siendo util en esas condiciones.
-
-**Diesño adaptable o responsive.**La dispovion que se reorganiza sola
-**Priorizar el contenido.** Mostrar primero lo que ayuda a completar la tarea evitando relleno con elementos secundarios. 
-**Orientazion.** Uso vertical y horizontal
-**Escalado de texto.** posibilidad de aumentar el tamao de letra desde los ajustes del dispositivo o de la app. 
-
-Una agenda escolar puede mostrar un evento como una tarjeta completa en un telefono estrecho. En una pantalla ma ancha podria presentar la info junto a otros eventos. El contenido importante debe seguir siendo accesible en ambas situaciones.
-
-Adapta no es hacer que todo quepa sino que mostrar, donde y como se vera en x condicion
-
-***Accesibilidad:***
-Consiste en diseñar la app para personas con diferentes condiciones, para que la comprenda y utilizen. No es una funcion para un grupo prquelio de usuairo. Tambien ayuida a alguien que tiene una lesion temporal, utiliza el movil bajo el sol, no puede escuchar un aviso o sosteiene el movil con una sola mano. 
-
-**5 principios** de la accesibilidad
-**Contrase suficiente.** que el trexo y los controles se distingan del fondo
-**No depender solo del color.** si una tarea esta pendiente en rojo y completada en verde, añade tambien palabras, iconos y otra señal
-**Texto que se pueda ampliar.** La app debe seguir siento util cuando la persona aumenta la letra.
-**Etiquetas comprensibles.** Un icono de lupa puede necesitar el nombre Buscar especialmente para texnologias de asistencia.
-**Lectores de pantalla y navegacion accesible.** Los elementso deben tener nombres y orden comprensibles para quien escucha la interfaz o navega con controles distintos al tacto directo.
-
-Guias WCAG (Explicar en profuncidda, la legalidad, necesitades obligarias y demas campos)
-
-**Actividad**
-La pantalla principal de X sitio tiene un texto gris claro sobre fondo blanco. En la esquina superior hay un icono pequño de tres lineas sin texto. Los eventos aparecene con la letra pequeña. Cada evento tiene un punto rojo o verde para indicar sie sta pendiente o completado, pero no aparece ninguna palabra. Para eliminar un evento hay que deslizarlo hacia un lado; no hay otro boton ni explicacion. Al guarda un cambio, la pantalla no muestra informacion.
-
-5 problemas.
-Fondo blanco con texto gris claro -> Poco contraste, cambiar el color de la fuente, del fondo o ambos
-Icono de tres lineas -> Posible texto complementario o un icono mas representativo de que el boton despliqga un menu de algun tipo, tanto en front como en el codigo como un tag.
-Los puntos rojos y verdes -> Añadir descripciones o textos que indique la funcionalidad
-Deslizar para borrar -> Pantallas, popups o demas tipo de widgets que indique que estamos haciendo, que va a ocuyrrir y dar la opcion de cancelar o continuar.
-No mostrar confirmacon al guardar cambios -> Pues que muestre confirmacion, error o proceso. 
-
-Diseñar para movil sinifica ayuda a la persona a completar su tarea en pantalla tactil en contextos distinto.
-
-Fin de la clase 5.11.2026
+- Las 5 palabras: plataforma, lenguaje, framework, SDK, IDE.
+- Nativa (Kotlin + Android Studio / Swift + Xcode): control total, pero dos apps que mantener.
+- Multiplataforma: React Native (TS, componentes nativos, `View`/`Text`) o Flutter (Dart, widgets propios); hay que probar en cada SO.
+- UI = lo que se ve; UX = cómo se vive el uso. Táctil: zonas grandes, feedback, sin `hover`, confirmar lo importante.
+- Adaptar = decidir qué se muestra, dónde y cómo (orientación, escalado de texto).
+- Accesibilidad: contraste, no solo color, texto ampliable, etiquetas, lectores de pantalla. WCAG (POUR, niveles A/AA/AAA); obligatoria en el sector público (RD 1112/2018) y en muchos servicios privados desde 2025 (Ley 11/2023).
