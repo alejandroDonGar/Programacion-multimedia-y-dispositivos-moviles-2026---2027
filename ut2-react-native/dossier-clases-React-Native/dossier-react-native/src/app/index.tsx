@@ -1,5 +1,6 @@
 // src/app/index.tsx (hasta crear el menú general)
-import InicioScreen from '../screens/InicioScreen';
+import PantallaPrincipal from '@/screens/PantallaPrincipal';
+import Caja from '../components/Caja';
 export default function Index() {
-  return <InicioScreen />;
+  return <PantallaPrincipal/>;
 }
