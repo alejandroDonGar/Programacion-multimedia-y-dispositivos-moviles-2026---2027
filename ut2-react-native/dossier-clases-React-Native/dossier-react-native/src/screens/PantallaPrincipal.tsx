@@ -5,11 +5,10 @@ export default function PantallaPrincipal() {
   return (
     <View style={contendorFondo.contenedor}>
       <Text style={contenedorPrincipal.pantallaPrincipal}>Contenedor Principal</Text>
-      
       <View style={contenedorInterior.contenedor}>
-        <Caja nombre="Caja A" bg="red"/>
-        <Caja nombre="Caja B" bg="blue" style={{ borderRadius: 20, borderWidth: 7, borderColor: 'white' }} />
-        <Caja nombre="Caja C" bg="green" style={{ borderRadius: 50, borderStyle: 'dashed' }} />
+        <Caja nombre="Caja 1" bg="red" />
+        <Caja nombre="Caja 2" bg="blue" style={{ borderRadius: 20, borderWidth: 7 }}/>
+        <Caja nombre="Caja 3" style={{ backgroundColor: 'green', borderColor: 'white' }}/>
       </View>
     </View>
   );
@@ -37,9 +36,6 @@ const contenedorPrincipal = StyleSheet.create({
 const contenedorInterior = StyleSheet.create({
   contenedor: {
     flex: 1,
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    gap: 8,
     backgroundColor: 'lightgray',
     margin: 15,
     padding: 10,
