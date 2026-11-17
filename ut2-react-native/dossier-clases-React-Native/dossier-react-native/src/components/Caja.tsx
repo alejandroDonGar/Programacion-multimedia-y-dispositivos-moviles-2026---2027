@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
-type Props = { nombre: string; bg?: string };
+type Props = { 
+  nombre: string; 
+  bg?: string; 
+  style?: StyleProp<ViewStyle>; 
+};
 
-export default function Caja({ nombre, bg }: Props) {
+export default function Caja({ nombre, bg, style }: Props) {
   const [valorFlex, setValorFlex] = useState(0);
 
   return (
-    <View style={[styles.caja, { backgroundColor: bg, flex: valorFlex }]}>
+    <View style={[styles.caja, { backgroundColor: bg, flex: valorFlex }, style]}>
       <Text>{nombre} (Flex: {valorFlex})</Text>
       <Button title="Sumar" onPress={() => setValorFlex(n => n + 1)} />
       <Button title="Restar" onPress={() => setValorFlex(n => Math.max(0, n - 1))} />

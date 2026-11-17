@@ -166,3 +166,22 @@ export default function Caja({ nombre, bg }: Props) {
 Ahora los botones permiten agrandar y reducir el tamaño de los contenedores. Estos se reparten la pantalla sin salirse de ella.
 
 ![Cajas con flex flexible](/imagenesREADME/cajas_flexibles.png)
+
+# Paso 6: Sustituir los botones
+
+Ahora lo que tenemos que hacer es sustituir los botones del paso 5: `para flex + 1`, utilizando un `TouchableHighlight` que muestre una alerta y aumente el valor; para `flex - 1`, utilizando `TouchableOpacity` y reduciendo el valor. Tenemos que personalizar el aspecto de ambos.
+
+**Propiedades de estilo recibidas por un componente**
+
+Para personalizar una caja desde la pantalla que la utiliza, declaramos una propiedad `style` del tipo `StyleProp<ViewStyle>` y combinamos el estilo por defecto con el recibido.
+
+El codigo ahora lo que haria seria sobreescribir las propiedades repeditas del primero. De esta manera se puede reutilizar el mismo componente sin duplicar el codigo.
+
+La vista en `PantallaPrincipal` quería así:
+```tsx
+<View style={contenedorInterior.contenedor}>
+  <Caja nombre="Caja 1" bg="red" />
+  <Caja nombre="Caja 2" bg="blue" style={{ borderRadius: 20, borderWidth: 7 }}/>
+  <Caja nombre="Caja 3" style={{ backgroundColor: 'green', borderColor: 'white' }}/>
+</View>
+```

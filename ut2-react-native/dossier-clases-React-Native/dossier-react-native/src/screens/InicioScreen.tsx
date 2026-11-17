@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Alert, Button, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
 export default function ContadorScreen() {
   const [contador, setContador] = useState(0);
+  type Props = { nombre: string; style?: StyleProp<ViewStyle> };
+  
   return (
     <View style={styles.contenedorCircular}>
       <Text>Contador: {contador}</Text>
@@ -19,6 +22,7 @@ export default function ContadorScreen() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   contenedorCircular: {
     borderRadius: 10,

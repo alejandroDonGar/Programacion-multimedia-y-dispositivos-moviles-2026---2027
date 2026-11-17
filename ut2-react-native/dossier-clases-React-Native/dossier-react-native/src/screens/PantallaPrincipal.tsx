@@ -6,9 +6,9 @@ export default function PantallaPrincipal() {
     <View style={contendorFondo.contenedor}>
       <Text style={contenedorPrincipal.pantallaPrincipal}>Contenedor Principal</Text>
       <View style={contenedorInterior.contenedor}>
-        <Caja nombre={''} bg={'red'}></Caja>
-        <Caja nombre={''} bg={'blue'}></Caja>
-        <Caja nombre={''} bg={'green'}></Caja>
+        <Caja nombre="Caja 1" bg="red" />
+        <Caja nombre="Caja 2" bg="blue" style={{ borderRadius: 20, borderWidth: 7 }}/>
+        <Caja nombre="Caja 3" style={{ backgroundColor: 'green', borderColor: 'white' }}/>
       </View>
     </View>
   );
