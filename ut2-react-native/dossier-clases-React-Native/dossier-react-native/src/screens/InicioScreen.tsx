@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Alert, Button, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 
 export default function ContadorScreen() {
   const [contador, setContador] = useState(0);
@@ -9,6 +9,13 @@ export default function ContadorScreen() {
       <Button title="Sumar" onPress={() => setContador(n => n + 1)}/>
       <Text></Text>
       <Button title="Restar" onPress={() => setContador(n => n - 1)} />
+      <TouchableHighlight onPress={() => Alert.alert('Pulsado')} underlayColor="#ddd">
+        <Text>Botón destacado</Text>
+      </TouchableHighlight>
+
+      <TouchableOpacity onPress={() => Alert.alert('Pulsado')}>
+        <Text>Botón con opacidad</Text>
+      </TouchableOpacity>
     </View>
   );
 }
