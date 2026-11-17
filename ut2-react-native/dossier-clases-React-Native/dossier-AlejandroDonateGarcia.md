@@ -177,11 +177,16 @@ Para personalizar una caja desde la pantalla que la utiliza, declaramos una prop
 
 El codigo ahora lo que haria seria sobreescribir las propiedades repeditas del primero. De esta manera se puede reutilizar el mismo componente sin duplicar el codigo.
 
-La vista en `PantallaPrincipal` quería así:
+# Paso 7: Nombre y estilos personalizados
+
+Ahora lo que tenemos que hacer es adaptar la pantalla para que cada caja muestre su nombre, **Caja A**, **B** y **C** y que acepte los estilos enviado mediante pripiedades. Al menos una caja tiene que tener las esquinas redondeadas y un borde diferente.
+
+El codigo que tendríamos que adaptar esta en `PantallaPrincipal`.
 ```tsx
-<View style={contenedorInterior.contenedor}>
-  <Caja nombre="Caja 1" bg="red" />
-  <Caja nombre="Caja 2" bg="blue" style={{ borderRadius: 20, borderWidth: 7 }}/>
-  <Caja nombre="Caja 3" style={{ backgroundColor: 'green', borderColor: 'white' }}/>
-</View>
+<Caja nombre="Caja A" bg="red"/>
+<Caja nombre="Caja B" bg="blue" style={{ borderRadius: 20, borderWidth: 7, borderColor: 'white' }} />
+<Caja nombre="Caja C" bg="green" style={{ borderRadius: 50, borderStyle: 'dashed' }} />
 ```
+La pantalla del teléfono con los conetendores personalizados quedaría así:
+
+![Interfaz con los estilos heredables](/imagenesREADME/Interfaz_estilos_constante_colores.png)
