@@ -343,3 +343,242 @@ Así es como se veria la aplicación con las diferentes opciones seleccionadas.
 
 ![Interfaz con wrap y column](/imagenesREADME/wrap_column.png)
 
+# Paso 9: Distribución, alineación e imágenes
+
+En esta práctica lo que haremos sera crear una nueva pantalla con un campo de texto que permita elegir un valor válido de `justifyContent`, botones para modificar `alignItems` y tres imágenes. Al menos una de las imágenes se tendrá que cargar desde los archivos del proyecto mediante `require`. Las otras podrán ser remotas o locales. 
+
+Utilizaremos `flexWrap: 'nowrap'` para observar el efecto de las alineaciones respecto al contenedor.
+
+**Nueva pantalla -> `AlineacionScreen`**
+
+Creamos una nueva pantalla dentro de `screens` llamada `Practica9.tsx` y la llamamos desde `index.tsx` igual que en las prácticas anteriores.
+
+**Valores permitidos**
+
+Antes del componente definimos dos listas con los valores que vamos a aceptar. Con `as const` TypeScript sabe que solo pueden ser esos textos, y con ellas sacamos los tipos `Justify` y `Align`.
+
+* La lista **`JUSTIFY`** sirve para validar lo que se escribe en el campo de texto.
+* La lista **`ALIGN`** sirve para generar un botón por cada valor de `alignItems`.
+
+```tsx
+const JUSTIFY = ['flex-start', 'center', 'flex-end', 'space-between', 'space-around', 'space-evenly'] as const;
+type Justify = (typeof JUSTIFY)[number];
+
+const ALIGN = ['flex-start', 'center', 'flex-end', 'stretch'] as const;
+type Align = (typeof ALIGN)[number];
+```
+
+**Estados**
+
+Inicializamos las tres variables de estado que controlan la pantalla.
+
+* El **texto** que se escribe en el campo.
+* El valor de **justifyContent** que se aplica de verdad.
+* El valor de **alignItems** activo.
+
+Separamos el texto del valor aplicado para que, mientras se escribe algo a medias, el contenedor no reciba un valor que no existe.
+
+```tsx
+const [texto, setTexto] = useState('flex-start');
+const [justify, setJustify] = useState<Justify>('flex-start');
+const [align, setAlign] = useState<Align>('flex-start');
+```
+
+**Validación del campo de texto**
+
+* `cambiarTexto`
+  * Guarda siempre lo que se escribe, pero solo cambia `justify` si el texto, sin espacios y en minúsculas, está dentro de la lista `JUSTIFY`. Si no es válido, se mantiene el último valor correcto.
+* `esValido`
+  * Lo usamos para pintar el borde del campo en rojo y mostrar los valores permitidos cuando lo escrito no sirve.
+
+```tsx
+const cambiarTexto = (valor: string) => {
+    setTexto(valor);
+    const limpio = valor.trim().toLocaleLowerCase();
+    if ((JUSTIFY as readonly string[]).includes(limpio)) {
+        setJustify(limpio as Justify);
+    }
+}
+const esValido = (JUSTIFY as readonly string[]).includes(texto.trim().toLocaleLowerCase());
+```
+
+**Campo de texto y botones de `alignItems`**
+
+Para el campo usamos `TextInput` con `autoCapitalize="none"` y `autoCorrect={false}`, porque si no el teclado de Android pone la primera letra en mayúscula y el valor deja de ser válido.
+
+Los botones no los escribimos uno a uno: recorremos `ALIGN` con `.map()` y creamos un `TouchableOpacity` por cada valor. El que está activo cambia de color con `styles.botonActivo`.
+
+```tsx
+<TextInput
+  style={[styles.input, !esValido && styles.inputError]}
+  value={texto}
+  onChangeText={cambiarTexto}
+  autoCapitalize="none"
+  autoCorrect={false}
+  placeholder="justifyContent"
+/>
+{!esValido && <Text style={styles.error}>Valores: {JUSTIFY.join(', ')}</Text>}
+
+<View style={styles.controles}>
+  {ALIGN.map(valor => (
+    <TouchableOpacity
+      key={valor}
+      style={[styles.boton, align === valor && styles.botonActivo]}
+      onPress={() => setAlign(valor)}>
+      <Text style={styles.textoBoton}>{valor}</Text>
+    </TouchableOpacity>
+  ))}
+</View>
+```
+
+**Alineación activa en pantalla**
+
+Para comprobar que funciona mostramos encima del escenario los dos valores que se están aplicando en ese momento.
+
+```tsx
+<Text style={styles.estado}>justifyContent: {justify}{'\n'}alignItems: {align}</Text>
+```
+
+**Escenario con las tres imágenes**
+
+El contenedor recibe `justifyContent` y `alignItems` desde el estado. En los estilos le ponemos `flexDirection: 'row'` y `flexWrap: 'nowrap'`, así las imágenes nunca saltan de línea y se ve bien cómo se mueven respecto al contenedor.
+
+* Las dos primeras imágenes son **locales** y se cargan con `require`, que necesita la ruta escrita tal cual (no se puede montar con variables).
+* La tercera es **remota** y se carga con `{ uri: ... }`. Las imágenes remotas necesitan un `width` y `height` explícitos porque React Native no sabe su tamaño hasta descargarlas.
+
+```tsx
+<View style={[styles.escenario, { justifyContent: justify, alignItems: align }]}>
+  <Image source={require('../../assets/images/react-logo.png')} style={styles.imagen} />
+  <Image source={require('../../assets/images/expo-logo.png')} style={styles.imagen} />
+  <Image source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }} style={styles.imagen} />
+</View>
+```
+
+**Áreas seguras con `SafeAreaView`**
+
+En la práctica 8 usábamos `paddingTop: 50` para que el contenido no quedara debajo de la barra de estado. Ahora lo sustituimos por `SafeAreaView` importado desde `react-native-safe-area-context` (no el antiguo de `react-native`), que calcula solo el espacio que reserva cada móvil. Con Expo Router no hace falta añadir `SafeAreaProvider` porque ya viene incluido.
+
+```tsx
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+<SafeAreaView style={styles.pantalla}>
+  {/* resto de la pantalla */}
+</SafeAreaView>
+```
+
+**Personalización con los `StyleSheet`**
+
+Como en las demás prácticas, diseñamos la interfaz separando los estilos por cada parte de la pantalla. Lo importante está en `escenario`, donde fijamos la dirección y el `nowrap`.
+
+```tsx
+const styles = StyleSheet.create({
+    pantalla: {
+        flex: 1,
+        backgroundColor: '#f0f0f0',
+        paddingHorizontal: 15
+    },
+    input: {
+        backgroundColor: 'white',
+        borderWidth: 2,
+        borderColor: '#2563eb',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 10
+    },
+    inputError: {
+        borderColor: '#dc2626'
+    },
+    error: {
+        color: '#dc2626',
+        fontSize: 12,
+        marginTop: 4
+    },
+    controles: {
+        flexDirection: 'row',
+        gap: 6,
+        marginVertical: 10
+    },
+    boton: {
+        flex: 1,
+        backgroundColor: '#93c5fd',
+        paddingVertical: 10,
+        borderRadius: 8,
+        alignItems: 'center'
+    },
+    botonActivo: {
+        backgroundColor: '#2563eb'
+    },
+    textoBoton: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 11
+    },
+    estado: {
+        fontWeight: 'bold',
+        marginBottom: 10
+    },
+    escenario: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'nowrap',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#ccc',
+        padding: 10
+    },
+    imagen: {
+        width: 80,
+        height: 80
+    },
+});
+```
+
+# Paso 9.1: Imagen aleatoria
+
+Partiendo de una colección de imágenes locales, añadimos un botón que elija una imagen al azar y la muestre.
+
+**Nueva pantalla -> `ImagenAleatoriaScreen`**
+
+Creamos `Practica9_1.tsx` dentro de `screens`.
+
+**Colección de imágenes**
+
+Como `require` tiene que ser estático, no podemos construir la ruta con el nombre de la imagen. Lo que hacemos es definir antes una lista donde cada elemento ya tiene su `require` escrito, y luego elegimos por posición.
+
+```tsx
+const imagenes = [
+  { nombre: 'react', source: require('../../assets/images/react-logo.png') },
+  { nombre: 'expo', source: require('../../assets/images/expo-logo.png') },
+  { nombre: 'icono', source: require('../../assets/images/icon.png') },
+];
+```
+
+**Estado y elección aleatoria**
+
+* Guardamos en un estado el **índice** de la imagen elegida y sacamos la imagen con `imagenes[indice]`.
+* `elegirAleatoria`
+  * Calcula una posición con `Math.floor(Math.random() * imagenes.length)`. `Math.random()` da un número entre 0 y 1 (sin llegar a 1), al multiplicarlo por la longitud queda entre 0 y 3, y `Math.floor` lo redondea hacia abajo para que salga 0, 1 o 2.
+
+```tsx
+const [indice, setIndice] = useState(0);
+const elegida = imagenes[indice];
+
+const elegirAleatoria = () => {
+  setIndice(Math.floor(Math.random() * imagenes.length));
+};
+```
+
+**Vista**
+
+Mostramos la imagen elegida, su nombre y el botón. Con solo tres imágenes es normal que a veces se repita la misma.
+
+```tsx
+<SafeAreaView style={styles.pantalla}>
+  <Image source={elegida.source} style={styles.imagen} />
+  <Text style={styles.nombre}>{elegida.nombre}</Text>
+  <TouchableOpacity style={styles.boton} onPress={elegirAleatoria}>
+    <Text style={styles.textoBoton}>Imagen aleatoria</Text>
+  </TouchableOpacity>
+</SafeAreaView>
+```
