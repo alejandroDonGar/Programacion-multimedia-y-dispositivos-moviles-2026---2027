@@ -1,7 +1,6 @@
 import { Link } from 'expo-router';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
-// Índice general: un Link por cada ruta de src/app/
 export default function Index() {
   return (
     <ScrollView contentContainerStyle={styles.lista}>
@@ -16,14 +15,22 @@ export default function Index() {
       <Link href="/practica08" style={styles.enlace}>Práctica 8 - Círculos dinámicos</Link>
       <Link href="/practica09" style={styles.enlace}>Práctica 9 - Alineación e imágenes</Link>
       <Link href="/practica09-1" style={styles.enlace}>Práctica 9.1 - Imagen aleatoria</Link>
-      {/* Descomentar al crear src/app/practica10.tsx */}
-      {/* <Link href="/practica10" style={styles.enlace}>Práctica 10 - Calculadora</Link> */}
+      <Link href="/practica10" style={styles.enlace}>Práctica 10 - Calculadora</Link>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  lista: { padding: 20, gap: 16 },
-  titulo: { fontSize: 20, fontWeight: 'bold' },
-  enlace: { fontSize: 16, color: '#2563eb' },
+  lista: { 
+    padding: 20, 
+    gap: 16 
+  },
+  titulo: { 
+    fontSize: 20, 
+    fontWeight: 'bold' 
+  },
+  enlace: { 
+    fontSize: 16, 
+    color: '#2563eb' 
+  },
 });

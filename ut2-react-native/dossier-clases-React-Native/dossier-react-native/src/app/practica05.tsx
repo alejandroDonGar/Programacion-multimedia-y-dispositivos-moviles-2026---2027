@@ -1,1 +1,1 @@
-export { default } from '@/screens/Practica5';
+export { default } from '@/screens/FlexDinamicoScreen';

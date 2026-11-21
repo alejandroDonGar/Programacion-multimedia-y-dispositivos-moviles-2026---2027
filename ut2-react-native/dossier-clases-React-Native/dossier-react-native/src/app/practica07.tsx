@@ -1,1 +1,1 @@
-export { default } from '@/screens/Practica7';
+export { default } from '@/screens/EstilosPersonalizadosScreen';

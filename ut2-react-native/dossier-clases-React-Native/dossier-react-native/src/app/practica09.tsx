@@ -1,1 +1,1 @@
-export { default } from '@/screens/Practica9';
+export { default } from '@/screens/AlineacionScreen';

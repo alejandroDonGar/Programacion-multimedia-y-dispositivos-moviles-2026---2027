@@ -582,3 +582,217 @@ Mostramos la imagen elegida, su nombre y el botón. Con solo tres imágenes es n
   </TouchableOpacity>
 </SafeAreaView>
 ```
+
+# Paso 10: Calculadora
+
+En esta práctica lo que haremos será reproducir una calculadora con una pantalla de resultado y filas de teclas numéricas y de operaciones. Los botones tienen que ser componentes reutilizables hechos con `TouchableOpacity`, las filas se colocan con Flexbox y el resultado se guarda en un estado. Las operaciones no se pueden resolver con `eval`, que evalúa directamente cualquier cadena de texto.
+
+Antes de empezar con la calculadora, el enunciado también nos pide reorganizar el proyecto para que no se pierdan las prácticas anteriores.
+
+**Organización de las prácticas con Expo Router**
+
+Hasta ahora `index.tsx` solo mostraba la última práctica, así que cada vez que empezábamos una nueva dejábamos de ver la anterior. Para arreglarlo hacemos tres cambios:
+
+* En `_layout.tsx` sustituimos las pestañas de la plantilla por un `Stack`. Así cada práctica se abre encima del índice y arriba aparece una flecha para volver.
+* Cada práctica tiene su propia ruta dentro de `src/app/` (`practica01.tsx`, `practica02.tsx`…). Estos archivos solo tienen una línea que exporta la pantalla de `src/screens/`, que es donde está el código de verdad.
+* `index.tsx` pasa a ser un índice con un `Link` por cada práctica.
+
+```tsx
+// src/app/_layout.tsx
+<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+  <AnimatedSplashOverlay />
+  <Stack />
+</ThemeProvider>
+```
+
+```tsx
+// src/app/practica10.tsx
+export { default } from '@/screens/CalculadoraScreen';
+```
+
+```tsx
+// src/app/index.tsx
+<ScrollView contentContainerStyle={styles.lista}>
+  <Text style={styles.titulo}>Prácticas de React Native con Expo</Text>
+  <Link href="/practica01" style={styles.enlace}>Práctica 1 - Hola mundo</Link>
+  {/* ... una línea por práctica ... */}
+  <Link href="/practica10" style={styles.enlace}>Práctica 10 - Calculadora</Link>
+</ScrollView>
+```
+
+También renombramos las pantallas de `screens` para que tengan un nombre que diga lo que hacen, siguiendo el estilo del repositorio del profesor (`HolaMundoScreen`, `InicioScreen`, `PrincipalScreen`, `CirculosDinamicosScreen`…).
+
+En `src/app/` no hay que dejar componentes sueltos, porque Expo Router trata cada archivo de esa carpeta como una ruta.
+
+**Componente reutilizable -> `TeclaCalculadora`**
+
+Creamos `TeclaCalculadora.tsx` dentro de `components`. Es el aspecto de una tecla, y la pantalla lo reutiliza 16 veces cambiando solo las propiedades.
+
+* `texto`: lo que pone la tecla.
+* `onPress`: la función que se ejecuta al pulsarla.
+* `color`: el color de fondo. Es opcional (`?`) y, si no se pasa, la tecla sale gris (`#333`).
+
+Con `flex: 1` todas las teclas de una misma fila se reparten el ancho por igual, sin tener que darles un tamaño fijo.
+
+```tsx
+type Props = {
+  texto: string;
+  onPress: () => void;
+  color?: string;
+};
+
+export default function TeclaCalculadora({ texto, onPress, color = '#333' }: Props) {
+  return (
+    <TouchableOpacity style={[styles.tecla, { backgroundColor: color }]} onPress={onPress}>
+      <Text style={styles.texto}>{texto}</Text>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  tecla: {
+    flex: 1,
+    height: 75,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  texto: { color: 'white', fontSize: 28 },
+});
+```
+
+**Nueva pantalla -> `CalculadoraScreen`**
+
+Creamos `CalculadoraScreen.tsx` dentro de `screens` con la interfaz y la lógica de la calculadora.
+
+**Estados**
+
+Inicializamos las tres variables de estado que controlan la calculadora.
+
+* La **pantalla**, que es el número que se está escribiendo. La guardamos como texto para poder ir añadiendo dígitos al final.
+* El **primer número**, que es el que se guarda al pulsar una operación. Empieza en `null` porque al principio no hay ninguno.
+* La **operación** pendiente: `+`, `-`, `×` o `÷`.
+
+```tsx
+const [pantalla, setPantalla] = useState('0');
+const [primerNumero, setPrimerNumero] = useState<number | null>(null);
+const [operacion, setOperacion] = useState<string | null>(null);
+```
+
+**Lógica de las teclas**
+
+Aquí definimos las funciones que responden a las pulsaciones.
+
+* `pulsarNumero`
+  * Si la pantalla está a `0`, sustituye el cero por el dígito pulsado para que no salga `07`. Si no, añade el dígito al final del texto.
+* `pulsarOperacion`
+  * Pasa a número lo que hay en pantalla con `Number()`, lo guarda como primer número junto con la operación y pone la pantalla a `0` para escribir el segundo número.
+* `pulsarIgual`
+  * Si falta el primer número o la operación, no hace nada. Si están los dos, hace la cuenta con un `switch` según la operación guardada, enseña el resultado y vacía los estados. Así resolvemos las operaciones sin usar `eval`.
+* `borrar`
+  * Devuelve los tres estados a su valor inicial.
+
+```tsx
+const pulsarNumero = (numero: string) => {
+  if (pantalla === '0') {
+    setPantalla(numero);
+  } else {
+    setPantalla(pantalla + numero);
+  }
+}
+
+const pulsarOperacion = (op: string) => {
+  setPrimerNumero(Number(pantalla));
+  setOperacion(op);
+  setPantalla('0');
+};
+
+const pulsarIgual = () => {
+  if (primerNumero === null || operacion === null) return;
+  const segundoNumero = Number(pantalla);
+  let resultado = 0;
+  switch (operacion) {
+    case '+': resultado = primerNumero + segundoNumero; break;
+    case '-': resultado = primerNumero - segundoNumero; break;
+    case '×': resultado = primerNumero * segundoNumero; break;
+    case '÷': resultado = primerNumero / segundoNumero; break;
+  }
+  setPantalla(String(resultado));
+  setPrimerNumero(null);
+  setOperacion(null);
+};
+
+const borrar = () => {
+  setPantalla('0');
+  setPrimerNumero(null);
+  setOperacion(null);
+};
+```
+
+**Pantalla de resultado**
+
+Encima del resultado mostramos una línea más pequeña con la operación pendiente (por ejemplo, `12 +`), para no perder de vista el primer número cuando la pantalla vuelve a `0`. Si todavía no hay primer número, se muestra un texto vacío.
+
+```tsx
+<Text style={styles.operacion}>
+  {primerNumero !== null ? `${primerNumero} ${operacion}` : ''}
+</Text>
+<Text style={styles.resultado}>{pantalla}</Text>
+```
+
+**Filas de teclas con Flexbox**
+
+Cada fila es un `View` con `flexDirection: 'row'` y dentro van cuatro `TeclaCalculadora`. Los números usan el color por defecto; las operaciones y el igual, el naranja de la constante `NARANJA`; y la tecla `C`, un gris más claro. En `onPress` usamos una función flecha (`() => pulsarNumero('7')`) para que la función se ejecute al pulsar la tecla y no al dibujar la pantalla.
+
+```tsx
+<View style={styles.fila}>
+  <TeclaCalculadora texto="7" onPress={() => pulsarNumero('7')} />
+  <TeclaCalculadora texto="8" onPress={() => pulsarNumero('8')} />
+  <TeclaCalculadora texto="9" onPress={() => pulsarNumero('9')} />
+  <TeclaCalculadora texto="÷" color={NARANJA} onPress={() => pulsarOperacion('÷')} />
+</View>
+{/* ... filas 4 5 6 × y 1 2 3 - ... */}
+<View style={styles.fila}>
+  <TeclaCalculadora texto="C" color="#a5a5a5" onPress={borrar} />
+  <TeclaCalculadora texto="0" onPress={() => pulsarNumero('0')} />
+  <TeclaCalculadora texto="=" color={NARANJA} onPress={pulsarIgual} />
+  <TeclaCalculadora texto="+" color={NARANJA} onPress={() => pulsarOperacion('+')} />
+</View>
+```
+
+**Personalización con los `StyleSheet`**
+
+El contenedor tiene `justifyContent: 'flex-end'` para que las teclas queden abajo, como en la calculadora del móvil, y `gap` para separar las filas. Dentro de cada fila, `gap` separa las teclas.
+
+```tsx
+const styles = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    backgroundColor: 'black',
+    justifyContent: 'flex-end',
+    padding: 15,
+    gap: 12,
+  },
+  operacion: {
+    color: '#888',
+    fontSize: 24,
+    textAlign: 'right'
+  },
+  resultado: {
+    color: 'white',
+    fontSize: 64,
+    textAlign: 'right',
+    marginBottom: 10
+  },
+  fila: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+});
+```
+
+**Limitaciones**
+
+* La calculadora hace una operación cada vez (`2 + 3 =`). Si se pulsa otra operación sin el `=`, se queda con el último número.
+* Después del `=`, si se escribe otro número se añade al resultado (`5` y luego `4` da `54`). Para empezar de cero hay que pulsar `C`.
+* Dividir entre `0` da `Infinity`, que es lo que devuelve JavaScript.

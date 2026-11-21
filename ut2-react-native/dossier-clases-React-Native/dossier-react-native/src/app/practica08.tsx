@@ -1,1 +1,1 @@
-export { default } from '@/screens/Practica8';
+export { default } from '@/screens/CirculosDinamicosScreen';
