@@ -1,5 +1,29 @@
-// src/app/index.tsx (hasta crear el menú general)
-import CirculosDinamicosScreen from '@/screens/Practica8';
+import { Link } from 'expo-router';
+import { ScrollView, StyleSheet, Text } from 'react-native';
+
+// Índice general: un Link por cada ruta de src/app/
 export default function Index() {
-  return <CirculosDinamicosScreen/>;
+  return (
+    <ScrollView contentContainerStyle={styles.lista}>
+      <Text style={styles.titulo}>Prácticas de React Native con Expo</Text>
+      <Link href="/practica01" style={styles.enlace}>Práctica 1 - Hola mundo</Link>
+      <Link href="/practica02" style={styles.enlace}>Práctica 2 - Contador</Link>
+      <Link href="/practica03" style={styles.enlace}>Práctica 3 - Pantalla y estilos separados</Link>
+      <Link href="/practica04" style={styles.enlace}>Práctica 4 - Tres cajas</Link>
+      <Link href="/practica05" style={styles.enlace}>Práctica 5 - Flex dinámico</Link>
+      <Link href="/practica06" style={styles.enlace}>Práctica 6 - Botones táctiles</Link>
+      <Link href="/practica07" style={styles.enlace}>Práctica 7 - Estilos personalizados</Link>
+      <Link href="/practica08" style={styles.enlace}>Práctica 8 - Círculos dinámicos</Link>
+      <Link href="/practica09" style={styles.enlace}>Práctica 9 - Alineación e imágenes</Link>
+      <Link href="/practica09-1" style={styles.enlace}>Práctica 9.1 - Imagen aleatoria</Link>
+      {/* Descomentar al crear src/app/practica10.tsx */}
+      {/* <Link href="/practica10" style={styles.enlace}>Práctica 10 - Calculadora</Link> */}
+    </ScrollView>
+  );
 }
+
+const styles = StyleSheet.create({
+  lista: { padding: 20, gap: 16 },
+  titulo: { fontSize: 20, fontWeight: 'bold' },
+  enlace: { fontSize: 16, color: '#2563eb' },
+});
