@@ -14,7 +14,7 @@ export default function IntroducirColorScreen() {
 
         const nombresCSS = [
             'white', 'black', 'red', 'green', 'blue', 'yellow', 'orange',
-            'purple', 'pink', 'gray', 'grey', 'brown', 'cyan', 'magenta',
+            'purple', 'pink', 'gray', 'grey', 'brown', 'cyan', 'teal', 'magenta',
             'lightblue', 'lightgreen', 'salmon', 'gold', 'plum', 'lightgray',
         ];
 

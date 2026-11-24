@@ -19,6 +19,7 @@ export default function Index() {
       <Link href="/practica11" style={styles.enlace}>Práctica 11 - Hook con Calculadora</Link>
       <Link href="/practica12" style={styles.enlace}>Práctica 12 - Color aleatorio configurable</Link>
       <Link href="/practica13" style={styles.enlace}>Práctica 13 - Introducir color</Link>
+      <Link href="/practica14" style={styles.enlace}>Práctica 14 - Bordes y Formularios</Link>
     </ScrollView>
   );
 }

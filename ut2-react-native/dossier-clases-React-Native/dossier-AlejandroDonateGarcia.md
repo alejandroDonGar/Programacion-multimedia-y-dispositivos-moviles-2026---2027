@@ -984,3 +984,164 @@ Probamos la pantalla en el emulador verificando los tres estados principales:
 
 ![Pantalla con el color cambiado](/imagenesREADME/color_aleatorio.png)
 
+# Paso 13: Introducir color mediante diálogo modal
+
+En esta práctica crearemos una pantalla con un botón central que abre un cuadro de diálogo (`Modal`) para que el usuario escriba un color. Si el color introducido es válido, el fondo de la pantalla cambiará a ese tono; de lo contrario, se mostrará una alerta de error.
+
+**Nueva pantalla -> `IntroducirColorScreen`**
+
+Creamos `IntroducirColorScreen.tsx` dentro de `screens` y la enlazamos desde `src/app/` (por ejemplo, `practica13.tsx`) siguiendo la organización con Expo Router de las prácticas anteriores.
+
+**Estados**
+
+Inicializamos tres variables de estado para controlar la pantalla y el diálogo:
+
+* **`fondo`**: guarda el color actual de la pantalla principal (empieza en `'white'`).
+* **`visible`**: booleano que controla si el diálogo modal está abierto o cerrado.
+* **`colorEscrito`**: almacena el texto que el usuario va tecleando en el `TextInput`.
+
+```tsx
+const [fondo, setFondo] = useState('white');
+const [visible, setVisible] = useState(false);
+const [colorEscrito, setColorEscrito] = useState('');
+```
+
+**Validación de colores (`esColorValido`)**
+
+Para evitar pasar un texto cualquiera al estilo `backgroundColor` de React Native, validamos la entrada antes de aplicarla. Primero limpiamos espacios con `.trim()` y pasamos todo a minúsculas con `.toLowerCase()`.
+
+La función devuelve `true` si cumple alguna de estas dos condiciones:
+* **Formato hexadecimal**: comprobamos mediante la expresión regular `/^#([0-9a-f]{3}|[0-9a-f]{6})$/` que empiece por `#` y tenga 3 o 6 caracteres hexadecimales.
+* **Nombres CSS**: comprobamos con `.includes()` si el texto está dentro de una lista predefinida de colores válidos (`white`, `black`, `lightblue`, `salmon`, etc.).
+
+```tsx
+const esColorValido = (texto: string) => {
+    const limpio = texto.trim().toLowerCase();
+    if (!limpio) return false;
+
+    const esHex = /^#([0-9a-f]{3}|[0-9a-f]{6})\$/.test(limpio);
+
+    const nombresCSS = [
+        'white', 'black', 'red', 'green', 'blue', 'yellow', 'orange',
+        'purple', 'pink', 'gray', 'grey', 'brown', 'cyan', 'magenta',
+        'lightblue', 'lightgreen', 'salmon', 'gold', 'plum', 'lightgray',
+    ];
+
+    return esHex || nombresCSS.includes(limpio);
+};
+```
+
+**Lógica de los botones del diálogo**
+
+* `aceptarColor`
+  * Si `esColorValido` devuelve `true`, actualiza el estado `fondo`, limpia el campo de texto y cierra el modal. Si no es válido, lanza un aviso nativo con `Alert.alert`.
+* `cancelar`
+  * Limpia el texto escrito y cierra el modal sin modificar el color de fondo actual.
+
+```tsx
+const aceptarColor = () => {
+    const limpio = colorEscrito.trim().toLowerCase();
+
+    if (esColorValido(limpio)) {
+        setFondo(limpio);
+        setColorEscrito('');
+        setVisible(false);
+    } else {
+        Alert.alert('Color no válido', 'Escribe un color CSS válido (ej. lightblue) o hexadecimal (ej. #ff0000).');
+    }
+};
+
+const cancelar = () => {
+    setColorEscrito('');
+    setVisible(false);
+};
+```
+
+**Diálogo con `Modal` y `TextInput`**
+
+Para que el cuadro de diálogo funcione de igual forma tanto en Android como en iOS, utilizamos el componente `Modal` con las propiedades `transparent` (para ver la pantalla detrás oscurecida con `#0008`) y `animationType="fade"`. Además, `onRequestClose={cancelar}` permite cerrarlo pulsando el botón físico o gesto de retroceso en Android.
+
+Dentro del `TextInput` añadimos `autoCapitalize="none"` para que el teclado no ponga la primera letra en mayúscula automáticamente.
+
+```tsx
+<View style={[styles.contenedor, { backgroundColor: fondo }]}>
+    <Button title="Cambiar de color" onPress={() => setVisible(true)} />
+
+    <Modal
+        visible={visible}
+        transparent
+        animationType="fade"
+        onRequestClose={cancelar}
+    >
+        <View style={styles.fondoOscuro}>
+            <View style={styles.cajaDialogo}>
+                <Text style={styles.titulo}>Introduce un color</Text>
+
+                <TextInput
+                    style={styles.input}
+                    value={colorEscrito}
+                    onChangeText={setColorEscrito}
+                    placeholder="Ej: lightblue o #ff9f0a"
+                    autoCapitalize="none"
+                />
+
+                <View style={styles.botones}>
+                    <Button title="Cancelar" color="gray" onPress={cancelar} />
+                    <Button title="Aceptar" onPress={aceptarColor} />
+                </View>
+            </View>
+        </View>
+    </Modal>
+</View>
+```
+
+**Personalización con los `StyleSheet`**
+
+El contenedor principal ocupa toda la pantalla (`flex: 1`) y centra el botón inicial. Para el modal, `fondoOscuro` aplica un negro semitransparente (`#0008`) que centra `cajaDialogo`, donde usamos `gap: 12` para separar el título, el campo de texto y la fila de botones alineados a la derecha (`justifyContent: 'flex-end'`).
+
+```tsx
+const styles = StyleSheet.create({
+    contenedor: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    fondoOscuro: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 24,
+        backgroundColor: '#0008',
+    },
+    cajaDialogo: {
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        gap: 12,
+    },
+    titulo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+    },
+    botones: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 10,
+    },
+});
+```
+
+**Resultado en el emulador**
+
+* **Diálogo modal abierto introduciendo el color:**
+
+![Diálogo modal introduciendo color](/imagenesREADME/buscador_color_personalizado.png)
+
+* **Pantalla principal con el fondo actualizado (`teal`):**
+
+![Pantalla coloreada con teal](/imagenesREADME/lightblue_color_fondo.png)
