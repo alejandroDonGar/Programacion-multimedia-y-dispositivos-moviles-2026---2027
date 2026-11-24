@@ -796,3 +796,191 @@ const styles = StyleSheet.create({
 * La calculadora hace una operación cada vez (`2 + 3 =`). Si se pulsa otra operación sin el `=`, se queda con el último número.
 * Después del `=`, si se escribe otro número se añade al resultado (`5` y luego `4` da `54`). Para empezar de cero hay que pulsar `C`.
 * Dividir entre `0` da `Infinity`, que es lo que devuelve JavaScript.
+
+# Paso 11: Hook personalizado para la calculadora
+
+En esta práctica refactorizamos la calculadora del paso anterior para separar la lógica de negocio de la interfaz visual. Para ello extraemos todas las variables de estado y las funciones de cálculo a un hook personalizado llamado `useCalculadora`, dejando la pantalla centrada únicamente en pintar el JSX y los estilos.
+
+**Nuevo hook -> `useCalculadora`**
+
+Creamos la carpeta `hooks` dentro de `src` y añadimos el archivo `useCalculadora.ts`. Usamos la extensión `.ts` en lugar de `.tsx` porque este archivo no contiene etiquetas visuales, solo lógica en TypeScript. Por convención en React, el nombre del hook tiene que empezar por `use`.
+
+* **Qué se mueve al hook:** Los tres estados (`pantalla`, `primerNumero` y `operacion`) y las cuatro funciones que responden a las teclas (`pulsarNumero`, `pulsarOperacion`, `pulsarIgual` y `borrar`).
+* **Qué devuelve el hook:** Un objeto con los valores necesarios para mostrar en pantalla y las acciones que se conectan a los eventos `onPress`. No exponemos los *setters* (`setPantalla`, `setOperacion`, etc.) para que la vista no pueda modificar el estado saltándose las reglas del cálculo.
+
+```ts
+// src/hooks/useCalculadora.ts
+import { useState } from 'react';
+
+export function useCalculadora() {
+  const [pantalla, setPantalla] = useState('0');
+  const [primerNumero, setPrimerNumero] = useState<number | null>(null);
+  const [operacion, setOperacion] = useState<string | null>(null);
+
+  const pulsarNumero = (numero: string) => {
+    if (pantalla === '0') {
+      setPantalla(numero);
+    } else {
+      setPantalla(pantalla + numero);
+    }
+  };
+
+  const pulsarOperacion = (op: string) => {
+    setPrimerNumero(Number(pantalla));
+    setOperacion(op);
+    setPantalla('0');
+  };
+
+  const pulsarIgual = () => {
+    if (primerNumero === null || operacion === null) return;
+    const segundoNumero = Number(pantalla);
+    let resultado = 0;
+
+    switch (operacion) {
+      case '+': resultado = primerNumero + segundoNumero; break;
+      case '-': resultado = primerNumero - segundoNumero; break;
+      case '×': resultado = primerNumero * segundoNumero; break;
+      case '÷': resultado = primerNumero / segundoNumero; break;
+    }
+
+    setPantalla(String(resultado));
+    setPrimerNumero(null);
+    setOperacion(null);
+  };
+
+  const borrar = () => {
+    setPantalla('0');
+    setPrimerNumero(null);
+    setOperacion(null);
+  };
+
+  return {
+    pantalla,
+    primerNumero,
+    operacion,
+    pulsarNumero,
+    pulsarOperacion,
+    pulsarIgual,
+    borrar,
+  };
+}
+```
+
+**Adaptación de la pantalla -> `CalculadoraScreen`**
+
+En `CalculadoraScreen.tsx` eliminamos la importación de `useState`, los estados y las funciones matemáticas. En su lugar importamos `useCalculadora` y desestructuramos los valores y funciones que necesitamos para conectarlos con `Text` y `TeclaCalculadora`. Tanto la constante `NARANJA` como el bloque `StyleSheet` permanecen en la pantalla porque pertenecen exclusivamente al diseño.
+
+```tsx
+// src/screens/CalculadoraScreen.tsx
+import { StyleSheet, Text, View } from 'react-native';
+
+import TeclaCalculadora from '@/components/TeclaCalculadora';
+import { useCalculadora } from '@/hooks/useCalculadora';
+
+const NARANJA = '#ff9f0a';
+
+export default function CalculadoraScreen() {
+  const {
+    pantalla,
+    primerNumero,
+    operacion,
+    pulsarNumero,
+    pulsarOperacion,
+    pulsarIgual,
+    borrar,
+  } = useCalculadora();
+
+  return (
+    <View style={styles.contenedor}>
+      <Text style={styles.operacion}>
+        {primerNumero !== null ? `${primerNumero} ${operacion}` : ''}
+      </Text>
+      <Text style={styles.resultado}>{pantalla}</Text>
+      {/* Filas de TeclaCalculadora conectadas a las funciones del hook */}
+    </View>
+  );
+}
+```
+
+![Estructura del hook personalizado](/imagenesREADME/calculadora_hook.png)
+
+**Comprobación del funcionamiento**
+
+Tras conectar el hook, comprobamos en el emulador que la calculadora mantiene exactamente el mismo comportamiento que en el paso 10: al introducir una operación se muestra arriba el primer operando junto al signo, y al pulsar `=` se resuelve el cálculo correctamente.
+
+* **Operación en curso:**
+
+![Operación sencilla en pantalla](/imagenesREADME/operacion_sencilla.png)
+
+* **Resultado tras pulsar igual:**
+
+![Resultado del cálculo](/imagenesREADME/resultado_calculo.png)
+
+# Paso 12: Color aleatorio con confirmación
+
+En esta práctica creamos una pantalla que permite cambiar su color de fondo de forma aleatoria, pero pidiendo confirmación al usuario antes de aplicar el cambio mediante un diálogo nativo (`Alert.alert`).
+
+**Pantalla principal -> `ColorAleatorioScreen`**
+
+Creamos el componente en `src/screens/ColorAleatorioScreen.tsx` y su correspondiente ruta en `src/app/practica12.tsx` (enlazándola también desde el menú de `src/app/index.tsx`).
+
+* **Lista de colores:** Definimos un array sencillo `COLORES` con nombres de colores válidos en CSS (`lightblue`, `lightgreen`, `salmon`, `gold`, `plum`, `lightgray`).
+* **Estado del fondo:** Usamos `useState('white')` para guardar el color actual de la pantalla, que empieza en blanco.
+* **Selección aleatoria y alerta:** Al pulsar el botón **«Cambiar de color»**, calculamos un índice al azar con `Math.floor(Math.random() * COLORES.length)` y lanzamos `Alert.alert()` mostrando el color propuesto. Si el usuario pulsa **«Aceptar»**, actualizamos el estado con `setFondo(colorElegido)`; si pulsa **«Cancelar»**, el estado no cambia y se mantiene el fondo anterior.
+
+```tsx
+// src/screens/ColorAleatorioScreen.tsx
+import { useState } from 'react';
+import { Alert, Button, StyleSheet, View } from 'react-native';
+
+const COLORES = ['lightblue', 'lightgreen', 'salmon', 'gold', 'plum', 'lightgray'];
+
+export default function ColorAleatorioScreen() {
+  const [fondo, setFondo] = useState('white');
+
+  const cambiarColor = () => {
+    const indice = Math.floor(Math.random() * COLORES.length);
+    const colorElegido = COLORES[indice];
+
+    Alert.alert(
+      'Cambiar color',
+      `¿Quieres cambiar el fondo a ${colorElegido}?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Aceptar', onPress: () => setFondo(colorElegido) },
+      ]
+    );
+  };
+
+  return (
+    <View style={[styles.contenedor, { backgroundColor: fondo }]}>
+      <Button title="Cambiar de color" onPress={cambiarColor} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+```
+
+**Comprobación del funcionamiento**
+
+Probamos la pantalla en el emulador verificando los tres estados principales:
+
+* **Pantalla recién abierta con el fondo blanco inicial:**
+
+![Pantalla recién abierta con fondo blanco](/imagenesREADME/pantalla_recien_iniciada.png)
+
+* **Diálogo de confirmación mostrando el color aleatorio propuesto:**
+
+![Alerta de confirmación de color](/imagenesREADME/alerta_de_cambio_de_color.png)
+
+* **Fondo actualizado tras pulsar en «Aceptar»:**
+
+![Pantalla con el color cambiado](/imagenesREADME/color_aleatorio.png)
+

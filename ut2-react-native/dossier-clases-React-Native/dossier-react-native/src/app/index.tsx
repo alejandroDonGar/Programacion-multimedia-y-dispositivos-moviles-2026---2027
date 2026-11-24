@@ -16,6 +16,8 @@ export default function Index() {
       <Link href="/practica09" style={styles.enlace}>Práctica 9 - Alineación e imágenes</Link>
       <Link href="/practica09-1" style={styles.enlace}>Práctica 9.1 - Imagen aleatoria</Link>
       <Link href="/practica10" style={styles.enlace}>Práctica 10 - Calculadora</Link>
+      <Link href="/practica11" style={styles.enlace}>Práctica 11 - Hook con Calculadora</Link>
+      <Link href="/practica12" style={styles.enlace}>Práctica 12 - Color aleatorio configurable</Link>
     </ScrollView>
   );
 }
