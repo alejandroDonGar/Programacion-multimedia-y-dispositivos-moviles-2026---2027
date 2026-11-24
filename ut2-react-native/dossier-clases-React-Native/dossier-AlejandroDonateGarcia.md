@@ -1145,3 +1145,214 @@ const styles = StyleSheet.create({
 * **Pantalla principal con el fondo actualizado (`teal`):**
 
 ![Pantalla coloreada con teal](/imagenesREADME/lightblue_color_fondo.png)
+
+# Paso 14: Borde activado por Switch y Formulario controlado
+
+En esta práctica trabajaremos el componente `Switch` para cambiar estilos dinámicamente en toda la pantalla y construiremos un formulario controlado combinando `TextInput`, `Switch` y `Button` con un único estado tipado en TypeScript.
+
+**Nueva pantalla -> `BordeYFormularioScreen`**
+
+Creamos `BordeYFormularioScreen.tsx` dentro de `screens` y la enlazamos desde `src/app/` (por ejemplo, `practica14.tsx`) siguiendo la estructura de Expo Router del proyecto.
+
+**Tipado y Estados**
+
+Definimos primero el tipo `DatosPersona` para estructurar los campos del formulario. La `edad` se guarda inicialmente como `string` porque el componente `TextInput` siempre devuelve texto; de este modo evitamos errores mientras el usuario escribe o borra dígitos, y la convertimos a número únicamente al validar.
+
+* **`bordeActivo`**: booleano que controla si se aplica o no el borde rojo alrededor de la vista principal.
+* **`datos`**: objeto de tipo `DatosPersona` que agrupa todos los valores del formulario (`nombre`, `edad`, `casado` y `jubilado`).
+
+```tsx
+type DatosPersona = {
+    nombre: string;
+    edad: string;
+    casado: boolean;
+    jubilado: boolean;
+};
+
+const [bordeActivo, setBordeActivo] = useState(false);
+const [datos, setDatos] = useState<DatosPersona>({
+    nombre: '',
+    edad: '',
+    casado: false,
+    jubilado: false,
+});
+```
+
+**Actualización genérica del formulario (`cambiarCampo`)**
+
+Para no escribir una función distinta por cada campo, utilizamos una función reutilizable con genéricos de TypeScript (`<K extends keyof DatosPersona>`), lo que garantiza que solo podamos pasar claves válidas del objeto. Mediante el operador *spread* (`...actual`) conservamos los datos previos y sobrescribimos únicamente el campo modificado.
+
+```tsx
+function cambiarCampo<K extends keyof DatosPersona>(campo: K, valor: DatosPersona[K]) {
+    setDatos((actual) => ({
+        ...actual,
+        [campo]: valor,
+    }));
+}
+```
+
+**Validación y envío (`enviarFormulario`)**
+
+Al pulsar el botón de envío realizamos dos comprobaciones antes de mostrar el resumen final:
+
+* **Nombre no vacío**: limpiamos los espacios con `.trim()` y comprobamos que haya contenido; si está vacío, lanzamos una alerta de error y cortamos la ejecución con `return`.
+* **Edad numérica válida**: convertimos el texto mediante `Number(datos.edad)` y verificamos que no esté vacío, que sea un número real (`!isNaN(edadNumero)`) y que sea mayor que `0`.
+* **Resumen final**: si ambas validaciones pasan, mostramos todos los datos formateados mediante `Alert.alert`.
+
+```tsx
+const enviarFormulario = () => {
+    const nombreLimpio = datos.nombre.trim();
+
+    if (!nombreLimpio) {
+        Alert.alert('Error', 'El valor no puede ser vacio. Escribe un nombre');
+        return;
+    }
+
+    const edadNumero = Number(datos.edad);
+
+    if (!datos.edad.trim() || isNaN(edadNumero) || edadNumero <= 0) {
+        Alert.alert('Error', 'Introduce una edad valida. Tiene que ser un numero y mayor a 0');
+        return;
+    }
+
+    Alert.alert(
+        'Datos guardados',
+        `Nombre: ${nombreLimpio}\n` +
+        `Edad: ${edadNumero}\n` +
+        `Casado/a: ${datos.casado ? 'Si' : 'No'}\n` +
+        `Jubilado/a: ${datos.jubilado ? 'Si' : 'No'}`
+    );
+};
+```
+
+**Interfaz: `Switch` del borde y Formulario**
+
+* **Estilo condicional**: en el `ScrollView` pasamos un array de estilos `[styles.contenedor, bordeActivo && styles.conBordeRojo]`, de manera que el borde rojo de `6px` solo se añade cuando `bordeActivo` es `true`.
+* **Personalización del `Switch`**: usamos `thumbColor={bordeActivo ? 'orange' : 'brown'}` para que el indicador sea marrón al estar desactivado y naranja al activarse.
+* **Campos del formulario**: cada `TextInput` y `Switch` llama a `cambiarCampo` pasando el nombre de su propiedad y el nuevo valor.
+
+```tsx
+<ScrollView contentContainerStyle={[styles.contenedor, bordeActivo && styles.conBordeRojo]}>
+    <View style={styles.caja}>
+        <Text style={styles.titulo}>1. Control de borde</Text>
+
+        <View style={styles.filaSwitch}>
+            <Text style={styles.etiqueta}>Activar borde rojo:</Text>
+            <Switch
+                value={bordeActivo}
+                onValueChange={setBordeActivo}
+                thumbColor={bordeActivo ? 'orange' : 'brown'}
+                trackColor={{ false: '#d7ccc8', true: '#ffe0b2' }}
+            />
+        </View>
+    </View>
+
+    <View style={styles.caja}>
+        <Text style={styles.titulo}>2. Formulario de persona</Text>
+
+        <Text style={styles.etiqueta}>Nombre:</Text>
+        <TextInput
+            style={styles.input}
+            placeholder="Ej: Alejandro"
+            value={datos.nombre}
+            onChangeText={(texto) => cambiarCampo('nombre', texto)}
+        />
+
+        <Text style={styles.etiqueta}>Edad:</Text>
+        <TextInput
+            style={styles.input}
+            placeholder="Ej: 25"
+            value={datos.edad}
+            onChangeText={(texto) => cambiarCampo('edad', texto)}
+            keyboardType="numeric"
+        />
+
+        <View style={styles.filaSwitch}>
+            <Text style={styles.etiqueta}>¿Está casado/a?</Text>
+            <Switch
+                value={datos.casado}
+                onValueChange={(valor) => cambiarCampo('casado', valor)}
+            />
+        </View>
+
+        <View style={styles.filaSwitch}>
+            <Text style={styles.etiqueta}>¿Está jubilado/a?</Text>
+            <Switch
+                value={datos.jubilado}
+                onValueChange={(valor) => cambiarCampo('jubilado', valor)}
+            />
+        </View>
+
+        <Button title="Enviar datos" onPress={enviarFormulario} />
+    </View>
+</ScrollView>
+```
+
+**Personalización con los `StyleSheet`**
+
+Utilizamos `flexGrow: 1` en el contenedor del `ScrollView` para que ocupe toda la pantalla y centre las tarjetas (`caja`), mientras que `filaSwitch` alinea en horizontal (`flexDirection: 'row'`) cada etiqueta con su interruptor mediante `justifyContent: 'space-between'`.
+
+```tsx
+const styles = StyleSheet.create({
+    contenedor: {
+        flexGrow: 1,
+        padding: 20,
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+        gap: 20,
+    },
+    conBordeRojo: {
+        borderWidth: 6,
+        borderColor: 'red',
+    },
+    caja: {
+        backgroundColor: 'white',
+        padding: 16,
+        borderRadius: 12,
+        gap: 12,
+    },
+    titulo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    etiqueta: {
+        fontSize: 16,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        fontSize: 16,
+    },
+    filaSwitch: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 4,
+    },
+});
+```
+
+**Resultado en el emulador**
+
+* **Switch desactivado (indicador marrón y pantalla sin borde):**
+
+![Pantalla sin borde](/imagenesREADME/pantalla_sin_borde.png)
+
+* **Switch activado (indicador naranja y borde rojo alrededor de la pantalla):**
+
+![Pantalla con borde rojo](/imagenesREADME/pantalla_con_borde.png)
+
+* **Validación de error con el campo nombre vacío:**
+
+![Alerta nombre vacío](/imagenesREADME/alerta_nombre_vacio.png)
+
+* **Validación de error al introducir texto en la edad:**
+
+![Alerta edad no válida](/imagenesREADME/alerta_edad_incorrecta.png)
+
+* **Formulario validado y resumen de datos enviados:**
+
+![Alerta datos enviados correctamente](/imagenesREADME/alert_con_datos_correctos.png)
