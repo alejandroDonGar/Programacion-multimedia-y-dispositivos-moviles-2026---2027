@@ -1356,3 +1356,278 @@ const styles = StyleSheet.create({
 * **Formulario validado y resumen de datos enviados:**
 
 ![Alerta datos enviados correctamente](/imagenesREADME/alert_con_datos_correctos.png)
+
+# Paso 15: Completar formulario y uso de `FlatList`
+
+En esta práctica completamos el formulario de persona incorporando los cuatro campos (`nombre`, `edad`, `casado` y `jubilado`) para mostrar un resumen final en pantalla tras validar los datos. Además, introducimos el componente `FlatList` para renderizar listas dinámicas de forma eficiente frente a `ScrollView`.
+
+**Nueva pantalla -> `FormularioListaScreen`**
+
+Creamos `FormularioListaScreen.tsx` dentro de `screens` y la enlazamos desde `src/app/` (por ejemplo, `practica15.tsx`) siguiendo la organización con Expo Router de las prácticas anteriores.
+
+**Tipado y Estados**
+
+Definimos dos tipos en TypeScript: `DatosPersona` para controlar las entradas del formulario (manteniendo `edad` como `string` mientras el usuario escribe) y `PersonaGuardada` para los registros ya validados que se almacenan en la lista con un identificador único (`id`).
+
+* **`datos`**: estado con los cuatro campos del formulario (`nombre`, `edad`, `casado` y `jubilado`).
+* **`resumen`**: almacena el último objeto `PersonaGuardada` enviado para mostrar la tarjeta de resumen en pantalla (empieza en `null`).
+* **`listaPersonas`**: array de objetos `PersonaGuardada` inicializado con dos personas de ejemplo (`Ana` y `Luis`) que alimenta el `FlatList`.
+
+```tsx
+type DatosPersona = {
+    nombre: string;
+    edad: string;
+    casado: boolean;
+    jubilado: boolean;
+};
+
+type PersonaGuardada = {
+    id: string;
+    nombre: string;
+    edad: number;
+    casado: boolean;
+    jubilado: boolean;
+};
+
+const [datos, setDatos] = useState<DatosPersona>({
+    nombre: '',
+    edad: '',
+    casado: false,
+    jubilado: false,
+});
+
+const [resumen, setResumen] = useState<PersonaGuardada | null>(null);
+
+const [listaPersonas, setListaPersonas] = useState<PersonaGuardada[]>([
+    { id: '1', nombre: 'Ana', edad: 32, casado: true, jubilado: false },
+    { id: '2', nombre: 'Luis', edad: 68, casado: false, jubilado: true },
+]);
+```
+
+**Actualización y envío del formulario (`cambiarCampo` y `enviarFormulario`)**
+
+Reutilizamos la función tipada `cambiarCampo` para actualizar cualquiera de los cuatro campos en una sola línea. Al pulsar el botón de envío:
+
+1. Validamos que el nombre no esté vacío y que la edad pueda convertirse a un número mayor que `0` mediante `Number(datos.edad)`.
+2. Creamos el objeto `nuevaPersona` generando un `id` único con `Date.now().toString()`.
+3. Actualizamos `resumen` para mostrar la caja verde de confirmación, insertamos el registro al inicio de `listaPersonas` y reiniciamos el formulario a sus valores iniciales.
+
+```tsx
+function cambiarCampo<K extends keyof DatosPersona>(campo: K, valor: DatosPersona[K]) {
+    setDatos((actual) => ({
+        ...actual,
+        [campo]: valor,
+    }));
+}
+
+const enviarFormulario = () => {
+    const nombreLimpio = datos.nombre.trim();
+
+    if (!nombreLimpio) {
+        Alert.alert('Error', 'El nombre no puede estar vacío.');
+        return;
+    }
+
+    const edadNumero = Number(datos.edad);
+
+    if (!datos.edad.trim() || isNaN(edadNumero) || edadNumero <= 0) {
+        Alert.alert('Error', 'Introduce una edad válida (número mayor que 0).');
+        return;
+    }
+
+    const nuevaPersona: PersonaGuardada = {
+        id: Date.now().toString(),
+        nombre: nombreLimpio,
+        edad: edadNumero,
+        casado: datos.casado,
+        jubilado: datos.jubilado,
+    };
+
+    setResumen(nuevaPersona);
+    setListaPersonas((actual) => [nuevaPersona, ...actual]);
+    setDatos({
+        nombre: '',
+        edad: '',
+        casado: false,
+        jubilado: false,
+    });
+};
+```
+
+**Resumen condicional y estructura de `FlatList`**
+
+A diferencia de `ScrollView` (que renderiza todos los elementos de golpe), `FlatList` virtualiza el contenido y solo dibuja los elementos cercanos a la zona visible. Por este motivo, usamos un `View` principal en lugar de envolver el `FlatList` dentro de un `ScrollView`.
+
+* **`{resumen && (...)}`**: renderizado condicional que dibuja el cuadro de resumen únicamente cuando ya se ha enviado al menos un formulario válido.
+* **`data` y `keyExtractor`**: conectan el array `listaPersonas` con el listado y extraen el `id` único de cada fila.
+* **`renderItem`**: dibuja cada persona alternando el color de fondo según si el índice es par o impar (`index % 2 === 0`).
+* **Componentes auxiliares**: añadimos `ListHeaderComponent` para el título con el contador, `ItemSeparatorComponent` para la línea divisoria y `ListEmptyComponent` por si la lista estuviera vacía.
+
+```tsx
+<View style={styles.contenedor}>
+    <View style={styles.caja}>
+        <Text style={styles.titulo}>Formulario de Persona</Text>
+
+        <TextInput
+            style={styles.input}
+            placeholder="Nombre"
+            value={datos.nombre}
+            onChangeText={(texto) => cambiarCampo('nombre', texto)}
+        />
+
+        <TextInput
+            style={styles.input}
+            placeholder="Edad"
+            value={datos.edad}
+            onChangeText={(texto) => cambiarCampo('edad', texto)}
+            keyboardType="numeric"
+        />
+
+        <View style={styles.filaSwitch}>
+            <Text style={styles.etiqueta}>Casado/a:</Text>
+            <Switch
+                value={datos.casado}
+                onValueChange={(valor) => cambiarCampo('casado', valor)}
+            />
+        </View>
+
+        <View style={styles.filaSwitch}>
+            <Text style={styles.etiqueta}>Jubilado/a:</Text>
+            <Switch
+                value={datos.jubilado}
+                onValueChange={(valor) => cambiarCampo('jubilado', valor)}
+            />
+        </View>
+
+        <Button title="Guardar y mostrar resumen" onPress={enviarFormulario} />
+
+        {resumen && (
+            <View style={styles.cajaResumen}>
+                <Text style={styles.tituloResumen}>Último registro enviado:</Text>
+                <Text>Nombre: {resumen.nombre}</Text>
+                <Text>Edad: {resumen.edad} años</Text>
+                <Text>Casado/a: {resumen.casado ? 'Sí' : 'No'}</Text>
+                <Text>Jubilado/a: {resumen.jubilado ? 'Sí' : 'No'}</Text>
+            </View>
+        )}
+    </View>
+
+    <FlatList
+        style={styles.lista}
+        data={listaPersonas}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+            <Text style={styles.tituloLista}>Lista de personas ({listaPersonas.length})</Text>
+        }
+        ListEmptyComponent={
+            <Text style={styles.vacio}>No hay personas registradas todavía.</Text>
+        }
+        ItemSeparatorComponent={() => <View style={styles.separador} />}
+        renderItem={({ item, index }) => (
+            <View style={[styles.filaLista, { backgroundColor: index % 2 === 0 ? '#ffffff' : '#eef2f5' }]}>
+                <Text style={styles.nombreLista}>{item.nombre} ({item.edad} años)</Text>
+                <Text style={styles.detalleLista}>
+                    {item.casado ? 'Casado/a' : 'Soltero/a'} · {item.jubilado ? 'Jubilado/a' : 'En activo'}
+                </Text>
+            </View>
+        )}
+    />
+</View>
+```
+
+**Personalización con los `StyleSheet`**
+
+Organizamos la pantalla en dos bloques principales dentro de `contenedor` (`flex: 1`): la tarjeta superior del formulario (`caja`) con su bloque destacado para el resumen (`cajaResumen`), y el listado inferior (`lista`) ocupando el espacio restante.
+
+```tsx
+const styles = StyleSheet.create({
+    contenedor: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#f5f5f5',
+        gap: 16,
+    },
+    caja: {
+        backgroundColor: 'white',
+        padding: 16,
+        borderRadius: 12,
+        gap: 10,
+    },
+    titulo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+    },
+    filaSwitch: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    etiqueta: {
+        fontSize: 16,
+    },
+    cajaResumen: {
+        marginTop: 8,
+        padding: 12,
+        backgroundColor: '#e8f5e9',
+        borderRadius: 8,
+        borderLeftWidth: 4,
+        borderLeftColor: 'green',
+    },
+    tituloResumen: {
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    lista: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        paddingHorizontal: 12,
+    },
+    tituloLista: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingVertical: 12,
+    },
+    filaLista: {
+        padding: 12,
+        borderRadius: 6,
+    },
+    nombreLista: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    detalleLista: {
+        color: '#555',
+        marginTop: 2,
+    },
+    separador: {
+        height: 1,
+        backgroundColor: '#e0e0e0',
+    },
+    vacio: {
+        textAlign: 'center',
+        color: '#888',
+        padding: 20,
+    },
+});
+```
+
+**Resultado en el emulador**
+
+* **Pantalla inicial con el formulario vacío y la lista precargada con dos personas:**
+
+![Pantalla inicial con lista de dos personas](/imagenesREADME/pantalla_vacia_con_lista_defecto_2_personas.png)
+
+* **Campos del formulario rellenos antes de pulsar el botón:**
+
+![Campos rellenos en el formulario](/imagenesREADME/campos_rellenos_del_formulario.png)
+
+* **Pantalla tras guardar: resumen visible y nuevo registro añadido al `FlatList`:**
+
+![Resumen final y lista actualizada](/imagenesREADME/campos_rellenos_del_formulario.png)

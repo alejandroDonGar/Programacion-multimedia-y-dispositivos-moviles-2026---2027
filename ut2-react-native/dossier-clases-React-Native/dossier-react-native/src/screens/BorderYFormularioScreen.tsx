@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { Alert, Button, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+
+//* -------------------------- *//
+//? Entidad del formulario
+
 // Primero hay que definir la estructura que tendra el formulario
 type DatosPersona = {
     nombre: string;
@@ -7,6 +11,7 @@ type DatosPersona = {
     casado: boolean;
     jubilado: boolean;
 };
+//* -------------------------- *//
 
 export default function BordeYFormularioScreen() {
 
@@ -17,9 +22,9 @@ export default function BordeYFormularioScreen() {
         casado: false,
         jubilado: false,
     });
+
     // Esta funcion sirve para actualizar cualquier campo del formulario sin repetir código.
     // "K extends keyof DatosPersona" asegura que solo pasemos nombres de campos que existen (nombre, edad, casado, jubilado).
-
     function cambiarCampo<K extends keyof DatosPersona>(campo: K, valor: DatosPersona[K]) {
         setDatos((actual) => ({
             // Copiamos los datos que tenia ya el formulario
@@ -29,12 +34,17 @@ export default function BordeYFormularioScreen() {
         }));
     }
     const enviarFormulario = () => {
+        //* -------------------------- *//
+        // Nombre vacio y sin espacios
         const nombreLimpio = datos.nombre.trim();
 
         if (!nombreLimpio) {
             Alert.alert('Error', 'El valor no puede ser vacio. Escribe un nombre')
             return;
         }
+        //* -------------------------- *//
+
+        //* -------------------------- *//
         // Convierte con Number() el string de la edad a numero.
         const edadNumero = Number(datos.edad);
 
@@ -43,7 +53,13 @@ export default function BordeYFormularioScreen() {
             Alert.alert('Error', 'Introduce una edad valida. Tiene que ser un numero y mayor a 0')
             return;
         }
+        //* -------------------------- *//
 
+        //* -------------------------- *//
+        //? Alerta guardado
+
+        // Muestra un contenedor tras haber pulsado para guardar la informacion.
+        // Solo lo hace si las comprobaciones anterioes son existosas
         Alert.alert(
             'Datos guardados',
             `Nombre: ${nombreLimpio}\n` +
@@ -51,29 +67,35 @@ export default function BordeYFormularioScreen() {
             `Casado/a: ${datos.casado ? 'Si' : 'No'}\n` +
             `Jubilado/a: ${datos.jubilado ? 'Si' : 'No'}`
         );
+        //* -------------------------- *//
     };
 
     return (
         <ScrollView contentContainerStyle={[styles.contenedor, bordeActivo && styles.conBordeRojo]}>
+            //* -------------------------- *//
+            //? Boton del borde
+
             <View style={styles.caja}>
                 <Text style={styles.titulo}>1. Control de borde</Text>
-
                 <View style={styles.filaSwitch}>
                     <Text style={styles.etiqueta}>Activar borde rojo:</Text>
                     <Switch
                         value={bordeActivo}
                         onValueChange={setBordeActivo}
-                        // Color del circulito (indicador): naranja si está activo, marrón si está desactivado
                         thumbColor={bordeActivo ? 'orange' : 'brown'}
-                        // Color de la barra de fondo del switch (opcional, para que combine bien)
                         trackColor={{ false: '#d7ccc8', true: '#ffe0b2' }}
                     />
                 </View>
             </View>
+            //* -------------------------- *//
+
+            //* -------------------------- *//
+            //? Caja del formulario
+
             <View style={styles.caja}>
                 <Text style={styles.titulo}>2. Formulario de persona</Text>
 
-                {/* Campo Nombre */}
+                {/* Zona del formulario para la opcion -> Nombre */}
                 <Text style={styles.etiqueta}>Nombre:</Text>
                 <TextInput
                     style={styles.input}
@@ -81,6 +103,7 @@ export default function BordeYFormularioScreen() {
                     value={datos.nombre}
                     onChangeText={(texto) => cambiarCampo('nombre', texto)}
                 />
+                {/* Zona del formulario para la opcion -> Edad */}
                 <Text style={styles.etiqueta}>Edad:</Text>
                 <TextInput
                     style={styles.input}
@@ -89,6 +112,7 @@ export default function BordeYFormularioScreen() {
                     onChangeText={(texto) => cambiarCampo('edad', texto)}
                     keyboardType="numeric" // Abre el teclado numérico en el móvil
                 />
+                {/* Zona del formulario para la opcion -> Casado */}
                 <View style={styles.filaSwitch}>
                     <Text style={styles.etiqueta}>¿Está casado/a?</Text>
                     <Switch
@@ -96,6 +120,7 @@ export default function BordeYFormularioScreen() {
                         onValueChange={(valor) => cambiarCampo('casado', valor)}
                     />
                 </View>
+                {/* Zona del formulario para la opcion -> Jubilado */}
                 <View style={styles.filaSwitch}>
                     <Text style={styles.etiqueta}>¿Está jubilado/a?</Text>
                     <Switch
@@ -103,17 +128,16 @@ export default function BordeYFormularioScreen() {
                         onValueChange={(valor) => cambiarCampo('jubilado', valor)}
                     />
                 </View>
-
                 <Button title="Enviar datos" onPress={enviarFormulario} />
             </View>
-
+            //* -------------------------- *//
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     contenedor: {
-        // Este permite que la vista ocuper toda la pantalla
+        //! Este permite que la vista ocuper toda la pantalla
         flexGrow: 1,
         padding: 20,
         justifyContent: 'center',

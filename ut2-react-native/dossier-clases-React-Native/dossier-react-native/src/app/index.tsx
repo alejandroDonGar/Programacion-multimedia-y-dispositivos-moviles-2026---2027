@@ -20,6 +20,7 @@ export default function Index() {
       <Link href="/practica12" style={styles.enlace}>Práctica 12 - Color aleatorio configurable</Link>
       <Link href="/practica13" style={styles.enlace}>Práctica 13 - Introducir color</Link>
       <Link href="/practica14" style={styles.enlace}>Práctica 14 - Bordes y Formularios</Link>
+      <Link href="/practica15" style={styles.enlace}>Práctica 15 - Formulario y Listas</Link>
     </ScrollView>
   );
 }
