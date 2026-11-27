@@ -21,6 +21,8 @@ export default function Index() {
       <Link href="/practica13" style={styles.enlace}>Práctica 13 - Introducir color</Link>
       <Link href="/practica14" style={styles.enlace}>Práctica 14 - Bordes y Formularios</Link>
       <Link href="/practica15" style={styles.enlace}>Práctica 15 - Formulario y Listas</Link>
+      <Link href="/practica16" style={styles.enlace}>Práctica 16 - Formulario y Listas de productos</Link>
+      <Link href="/practica17" style={styles.enlace}>Práctica 17 - Calculadora IMC</Link>
     </ScrollView>
   );
 }

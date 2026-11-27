@@ -1630,4 +1630,290 @@ const styles = StyleSheet.create({
 
 * **Pantalla tras guardar: resumen visible y nuevo registro añadido al `FlatList`:**
 
-![Resumen final y lista actualizada](/imagenesREADME/campos_rellenos_del_formulario.png)
+![Resumen final y lista actualizada](/imagenesREADME/datos_enviado_y_guardados_mostrados.png)
+
+# Paso 16: Lista de productos con `FlatList`
+
+En esta práctica adaptamos el formulario y el listado de la práctica anterior para gestionar una **lista de productos** en lugar de personas. Cada elemento muestra su `nombre`, `precio` y `stock`, eliminando los separadores entre filas, alternando el color de fondo según su posición en la lista y personalizando la cabecera del `FlatList`.
+
+**Nueva pantalla -> `FormularioListaScreen` (o `ListaProductosScreen`)**
+
+Creamos la pantalla dentro de `src/screens/` y su correspondiente ruta en `src/app/practica16.tsx` siguiendo la estructura con Expo Router del proyecto.
+
+**Tipado y Estados**
+
+Sustituimos las entidades anteriores por `DatosProducto` (guardando `precio` y `stock` como `string` mientras se escriben en los `TextInput`) y `ProductoGuardado` para los objetos validados que se almacenan en el estado.
+
+* **`datos`**: estado con los tres campos del formulario (`nombre`, `precio` y `stock`).
+* **`resumen`**: guarda el último producto añadido para mostrar la tarjeta de confirmación en pantalla.
+* **`listaProductos`**: array inicializado con dos productos por defecto (`Teclado` y `Ratón`) que alimenta el `FlatList`.
+
+```tsx
+type DatosProducto = {
+    nombre: string;
+    precio: string;
+    stock: string;
+};
+
+type ProductoGuardado = {
+    id: string;
+    nombre: string;
+    precio: number;
+    stock: number;
+};
+
+const [datos, setDatos] = useState<DatosProducto>({
+    nombre: '',
+    precio: '',
+    stock: '',
+});
+
+const [resumen, setResumen] = useState<ProductoGuardado | null>(null);
+
+const [listaProductos, setListaProductos] = useState<ProductoGuardado[]>([
+    { id: '1', nombre: 'Teclado', precio: 45.5, stock: 12 },
+    { id: '2', nombre: 'Ratón', precio: 20, stock: 25 },
+]);
+```
+
+**Validación y envío del formulario (`enviarFormulario`)**
+
+Mantenemos la función genérica `cambiarCampo` para actualizar los campos del formulario. Al pulsar el botón de guardar:
+
+1. Comprobamos que el **nombre** no esté vacío tras aplicar `.trim()`.
+2. Convertimos el **precio** con `Number(datos.precio)` y verificamos que sea un número válido mayor que `0`.
+3. Validamos que el **stock** sea un número entero igual o mayor que `0` (`Number.isInteger(stockNumero)`).
+4. Creamos el objeto `nuevoProducto` con un `id` único (`Date.now().toString()`), actualizamos `resumen`, lo insertamos al principio de `listaProductos` y vaciamos los campos del formulario.
+
+```tsx
+const enviarFormulario = () => {
+    const nombreLimpio = datos.nombre.trim();
+
+    if (!nombreLimpio) {
+        Alert.alert('Error', 'El nombre no puede estar vacío.');
+        return;
+    }
+
+    const precioNumero = Number(datos.precio);
+
+    if (!datos.precio.trim() || isNaN(precioNumero) || precioNumero <= 0) {
+        Alert.alert('Error', 'Introduce un precio válido (número mayor que 0).');
+        return;
+    }
+
+    const stockNumero = Number(datos.stock);
+
+    if (!datos.stock.trim() || isNaN(stockNumero) || stockNumero < 0 || !Number.isInteger(stockNumero)) {
+        Alert.alert('Error', 'Introduce un stock válido (número entero igual o mayor que 0).');
+        return;
+    }
+
+    const nuevoProducto: ProductoGuardado = {
+        id: Date.now().toString(),
+        nombre: nombreLimpio,
+        precio: precioNumero,
+        stock: stockNumero,
+    };
+
+    setResumen(nuevoProducto);
+    setListaProductos((actual) => [nuevoProducto, ...actual]);
+    setDatos({
+        nombre: '',
+        precio: '',
+        stock: '',
+    });
+};
+```
+
+**Personalización del `FlatList` en la vista**
+
+Para cumplir con los requisitos de diseño del listado aplicamos tres ajustes clave respecto a la práctica 15:
+
+* **Sin separadores**: eliminamos la propiedad `ItemSeparatorComponent` del `FlatList` para que las filas queden juntas.
+* **Colores alternos con `index`**: dentro de `renderItem`, evaluamos `index % 2 === 0` para aplicar fondo blanco (`#ffffff`) a las posiciones pares y gris azulado (`#eef2f5`) a las impares.
+* **Cabecera personalizada**: en `ListHeaderComponent` mostramos el texto `«Lista Productos»` aplicando `textAlign: 'center'` y aumentando `fontSize` a `22`.
+
+```tsx
+<FlatList
+    style={styles.lista}
+    data={listaProductos}
+    keyExtractor={(item) => item.id}
+    ListHeaderComponent={
+        <Text style={styles.tituloLista}>Lista Productos</Text>
+    }
+    ListEmptyComponent={
+        <Text style={styles.vacio}>No hay productos registrados todavía.</Text>
+    }
+    renderItem={({ item, index }) => (
+        <View style={[styles.filaLista, { backgroundColor: index % 2 === 0 ? '#ffffff' : '#eef2f5' }]}>
+            <Text style={styles.nombreLista}>{item.nombre}</Text>
+            <Text style={styles.detalleLista}>
+                Precio: {item.precio} € · Stock: {item.stock} uds.
+            </Text>
+        </View>
+    )}
+/>
+```
+
+**Personalización con los `StyleSheet`**
+
+Conservamos la estructura general de estilos de la práctica anterior, eliminando `filaSwitch`, `etiqueta` y `separador` (que ya no se utilizan) y modificando `tituloLista` para centrar la cabecera y darle un mayor tamaño.
+
+```tsx
+const styles = StyleSheet.create({
+    contenedor: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#f5f5f5',
+        gap: 16,
+    },
+    caja: {
+        backgroundColor: 'white',
+        padding: 16,
+        borderRadius: 12,
+        gap: 10,
+    },
+    titulo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+    },
+    cajaResumen: {
+        marginTop: 8,
+        padding: 12,
+        backgroundColor: '#e8f5e9',
+        borderRadius: 8,
+        borderLeftWidth: 4,
+        borderLeftColor: 'green',
+    },
+    tituloResumen: {
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    lista: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        paddingHorizontal: 12,
+    },
+    tituloLista: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingVertical: 12,
+    },
+    filaLista: {
+        padding: 12,
+        borderRadius: 6,
+    },
+    nombreLista: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    detalleLista: {
+        color: '#555',
+        marginTop: 2,
+    },
+    vacio: {
+        textAlign: 'center',
+        color: '#888',
+        padding: 20,
+    },
+});
+```
+
+**Resultado en el emulador**
+
+* **Pantalla recién abierta con el formulario vacío y la lista inicial de productos:**
+
+![Pantalla inicial con lista de productos](/imagenesREADME/formulario_vacio_productos.png)
+
+* **Pantalla tras guardar el producto (resumen visible y lista actualizada sin separadores):**
+
+![Pantalla tras guardar producto](/imagenesREADME/nuevo_producto_guardado.png)
+
+# Paso 17: Tarjetas para calcular el IMC (`CardPersona`)
+
+En esta práctica creamos un componente reutilizable `CardPersona.tsx` con los campos `id`, `nombre`, `altura` y `peso` que calcula automáticamente el **Índice de Masa Corporal (IMC)** mediante la fórmula `peso / (altura * altura)`. La pantalla contenedora mantiene un listado dinámico de identificadores estables que permite añadir tarjetas mediante un botón `+` y eliminarlas individualmente usando iconos de la librería `@expo/vector-icons` (`Ionicons`).
+
+**Nuevo componente -> `CardPersona.tsx`**
+
+Creamos el componente reutilizable en `src/components/CardPersona.tsx`, la pantalla contenedora en `src/screens/CalculadoraIMCScreen.tsx` y su ruta correspondiente en `src/app/practica17.tsx`.
+
+**Comunicación Padre-Hijo y cálculo del IMC (`CardPersona.tsx`)**
+
+Cada tarjeta recibe por *props* su identificador único `id` y la función `onEliminar` para notificar su borrado al componente padre al pulsar el icono de la papelera (`trash-outline`). Internamente gestiona sus estados locales con `useState` y valida los valores numéricos antes de operar para evitar divisiones entre cero o entradas no válidas.
+
+```tsx
+type CardPersonaProps = {
+    id: string;
+    onEliminar: (id: string) => void;
+};
+
+export default function CardPersona({ id, onEliminar }: CardPersonaProps) {
+    const [nombre, setNombre] = useState('');
+    const [altura, setAltura] = useState('');
+    const [peso, setPeso] = useState('');
+
+    const calcularIMC = () => {
+        const pesoNum = Number(peso.replace(',', '.'));
+        const alturaNum = Number(altura.replace(',', '.'));
+
+        if (!peso.trim() || !altura.trim() || isNaN(pesoNum) || isNaN(alturaNum) || pesoNum <= 0 || alturaNum <= 0) {
+            return null;
+        }
+
+        const imc = pesoNum / (alturaNum * alturaNum);
+        return imc.toFixed(2);
+    };
+
+    const imcResultado = calcularIMC();
+    // ...
+}
+```
+
+**Gestión de claves estables e iconos en el contenedor (`CalculadoraIMCScreen.tsx`)**
+
+La pantalla contenedora almacena únicamente un array de identificadores únicos (`string[]`) generados mediante `Date.now().toString()`. Al pasar cada identificador como `keyExtractor` en el `FlatList`, cada tarjeta conserva su estado local independiente aunque se añadan o eliminen otras tarjetas de la lista. Para el botón de añadir empleamos el icono `add` de `Ionicons`.
+
+```tsx
+const [idsTarjetas, setIdsTarjetas] = useState<string[]>(['1']);
+
+const anadirTarjeta = () => {
+    const nuevoId = Date.now().toString();
+    setIdsTarjetas((actual) => [...actual, nuevoId]);
+};
+
+const eliminarTarjeta = (idAEliminar: string) => {
+    setIdsTarjetas((actual) => actual.filter((id) => id !== idAEliminar));
+};
+```
+
+```tsx
+<FlatList
+    data={idsTarjetas}
+    keyExtractor={(item) => item}
+    contentContainerStyle={styles.listaContenido}
+    ListEmptyComponent={
+        <Text style={styles.vacio}>Pulsa el botón «+» para añadir una tarjeta.</Text>
+    }
+    renderItem={({ item }) => (
+        <CardPersona id={item} onEliminar={eliminarTarjeta} />
+    )}
+/>
+```
+
+**Resultado en el emulador**
+
+* **Pantalla recién abierta con una tarjeta inicial vacía:**
+
+![Pantalla inicial calculadora IMC](/imagenesREADME/calculadora_recien_abierta.png)
+
+* **Pantalla con los datos introducidos y el resultado del IMC calculado:**
+
+![Pantalla con datos y resultado IMC](/imagenesREADME/calculadora_funcional_imc.png)

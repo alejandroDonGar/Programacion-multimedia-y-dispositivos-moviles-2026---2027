@@ -1,44 +1,42 @@
 import { useState } from 'react';
-import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Alert, Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 
 //* -------------------------- *//
 //? Entidades del formulario
 
-// Al igual que en la practica anterior, creamos la entidad persona
-type DatosPersona = {
+// Al igual que en la practica anterior, creamos la entidad producto
+type DatosProducto = {
     nombre: string;
-    edad: string; // Se guarda como string por el TextInput
-    casado: boolean;
-    jubilado: boolean;
+    precio: string; // Se guarda como string por el TextInput
+    stock: string; // Se guarda como string por el TextInput
 };
-// Ahora creamos la entidad que llevara los datos de las personas que se van a guardar en la lista
-type PersonaGuardada = {
+
+// Ahora creamos la entidad que llevara los datos de los productos que se van a guardar en la lista
+type ProductoGuardado = {
     id: string;
     nombre: string;
-    edad: number;
-    casado: boolean;
-    jubilado: boolean;
+    precio: number;
+    stock: number;
 };
 //* -------------------------- *//
 
 export default function FormularioListaScreen() {
     // Aqui estan los estados de la informacion del formulario
-    const [datos, setDatos] = useState<DatosPersona>({
+    const [datos, setDatos] = useState<DatosProducto>({
         nombre: '',
-        edad: '',
-        casado: false,
-        jubilado: false,
+        precio: '',
+        stock: '',
     });
 
-    // Esta linea lo que hace es guardar a la informacion de la ultima persona que entro en la lista
-    const [resumen, setResumen] = useState<PersonaGuardada | null>(null);
-    const [listaPersonas, setListaPersonas] = useState<PersonaGuardada[]>([
-        { id: '1', nombre: 'Ana', edad: 32, casado: true, jubilado: false },
-        { id: '2', nombre: 'Luis', edad: 68, casado: false, jubilado: true },
+    // Esta linea lo que hace es guardar la informacion del ultimo producto que entro en la lista
+    const [resumen, setResumen] = useState<ProductoGuardado | null>(null);
+    const [listaProductos, setListaProductos] = useState<ProductoGuardado[]>([
+        { id: '1', nombre: 'Teclado', precio: 45.5, stock: 12 },
+        { id: '2', nombre: 'Ratón', precio: 20, stock: 25 },
     ]);
 
     // Igual que la anterior donde copiamos y reemplazamos los valores
-    function cambiarCampo<K extends keyof DatosPersona>(campo: K, valor: DatosPersona[K]) {
+    function cambiarCampo<K extends keyof DatosProducto>(campo: K, valor: DatosProducto[K]) {
         setDatos((actual) => ({
             ...actual,
             [campo]: valor,
@@ -57,39 +55,47 @@ export default function FormularioListaScreen() {
         //* -------------------------- *//
 
         //* -------------------------- *//
-        // Edad de string a numero, sin espacios y comprobando que sea un numero positivo
-        const edadNumero = Number(datos.edad);
+        // Precio de string a numero, sin espacios y comprobando que sea un numero positivo
+        const precioNumero = Number(datos.precio);
 
-        if (!datos.edad.trim() || isNaN(edadNumero) || edadNumero <= 0) {
-            Alert.alert('Error', 'Introduce una edad válida (número mayor que 0).');
+        if (!datos.precio.trim() || isNaN(precioNumero) || precioNumero <= 0) {
+            Alert.alert('Error', 'Introduce un precio válido (número mayor que 0).');
             return;
         }
         //* -------------------------- *//
 
-        // Ahora lo que vamos a hacer que creamos una ultima entidad valida para el formulario.
-        const nuevaPersona: PersonaGuardada = {
+        //* -------------------------- *//
+        // Stock de string a numero, sin espacios y comprobando que sea un numero valido (0 o mayor)
+        const stockNumero = Number(datos.stock);
+
+        if (!datos.stock.trim() || isNaN(stockNumero) || stockNumero < 0 || !Number.isInteger(stockNumero)) {
+            Alert.alert('Error', 'Introduce un stock válido (número entero igual o mayor que 0).');
+            return;
+        }
+        //* -------------------------- *//
+
+        // Ahora lo que vamos a hacer es crear una ultima entidad valida para el formulario.
+        const nuevoProducto: ProductoGuardado = {
             id: Date.now().toString(),
             nombre: nombreLimpio,
-            edad: edadNumero,
-            casado: datos.casado,
-            jubilado: datos.jubilado,
+            precio: precioNumero,
+            stock: stockNumero,
         };
 
         //* -------------------------- *//
         //? Sets para guardar, mostrar y resetear la informacion
 
-        // Se guarda el resumen de la persona del formulario para poder mostrarla
-        setResumen(nuevaPersona);
+        // Se guarda el resumen del producto del formulario para poder mostrarlo
+        setResumen(nuevoProducto);
 
-        // Se añade la persona a la ultima posicion de la lista
-        setListaPersonas((actual) => [nuevaPersona, ...actual]);
+        // Se añade el producto a la primera posicion de la lista
+        setListaProductos((actual) => [nuevoProducto, ...actual]);
 
-        // Cuando se guarda en la lista alo que se hace es borrar los datos del formulario para poder volver a enviar uno nuevo
+        // Cuando se guarda en la lista lo que se hace es borrar los datos del formulario para poder volver a enviar uno nuevo
         setDatos({
             nombre: '',
-            edad: '',
-            casado: false,
-            jubilado: false,
+            precio: '',
+            stock: '',
         });
         //* -------------------------- *//
     };
@@ -97,7 +103,7 @@ export default function FormularioListaScreen() {
     return (
         <View style={styles.contenedor}>
             <View style={styles.caja}>
-                <Text style={styles.titulo}>Formulario de Persona</Text>
+                <Text style={styles.titulo}>Formulario de Producto</Text>
 
                 <TextInput
                     style={styles.input}
@@ -107,52 +113,43 @@ export default function FormularioListaScreen() {
                 />
                 <TextInput
                     style={styles.input}
-                    placeholder="Edad"
-                    value={datos.edad}
-                    onChangeText={(texto) => cambiarCampo('edad', texto)}
+                    placeholder="Precio"
+                    value={datos.precio}
+                    onChangeText={(texto) => cambiarCampo('precio', texto)}
                     keyboardType="numeric"
                 />
-                <View style={styles.filaSwitch}>
-                    <Text style={styles.etiqueta}>Casado/a:</Text>
-                    <Switch
-                        value={datos.casado}
-                        onValueChange={(valor) => cambiarCampo('casado', valor)}
-                    />
-                </View>
-                <View style={styles.filaSwitch}>
-                    <Text style={styles.etiqueta}>Jubilado/a:</Text>
-                    <Switch
-                        value={datos.jubilado}
-                        onValueChange={(valor) => cambiarCampo('jubilado', valor)}
-                    />
-                </View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Stock"
+                    value={datos.stock}
+                    onChangeText={(texto) => cambiarCampo('stock', texto)}
+                    keyboardType="numeric"
+                />
                 <Button title="Guardar y mostrar resumen" onPress={enviarFormulario} />
                 {resumen && (
                     <View style={styles.cajaResumen}>
                         <Text style={styles.tituloResumen}>Último registro enviado:</Text>
                         <Text>Nombre: {resumen.nombre}</Text>
-                        <Text>Edad: {resumen.edad} años</Text>
-                        <Text>Casado/a: {resumen.casado ? 'Sí' : 'No'}</Text>
-                        <Text>Jubilado/a: {resumen.jubilado ? 'Sí' : 'No'}</Text>
+                        <Text>Precio: {resumen.precio} €</Text>
+                        <Text>Stock: {resumen.stock} uds.</Text>
                     </View>
                 )}
             </View>
             <FlatList
                 style={styles.lista}
-                data={listaPersonas}
+                data={listaProductos}
                 keyExtractor={(item) => item.id}
                 ListHeaderComponent={
-                    <Text style={styles.tituloLista}>Lista de personas ({listaPersonas.length})</Text>
+                    <Text style={styles.tituloLista}>Lista Productos</Text>
                 }
                 ListEmptyComponent={
-                    <Text style={styles.vacio}>No hay personas registradas todavía.</Text>
+                    <Text style={styles.vacio}>No hay productos registrados todavía.</Text>
                 }
-                ItemSeparatorComponent={() => <View style={styles.separador} />}
                 renderItem={({ item, index }) => (
                     <View style={[styles.filaLista, { backgroundColor: index % 2 === 0 ? '#ffffff' : '#eef2f5' }]}>
-                        <Text style={styles.nombreLista}>{item.nombre} ({item.edad} años)</Text>
+                        <Text style={styles.nombreLista}>{item.nombre}</Text>
                         <Text style={styles.detalleLista}>
-                            {item.casado ? 'Casado/a' : 'Soltero/a'} · {item.jubilado ? 'Jubilado/a' : 'En activo'}
+                            Precio: {item.precio} € · Stock: {item.stock} uds.
                         </Text>
                     </View>
                 )}
@@ -184,14 +181,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 10,
     },
-    filaSwitch: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    etiqueta: {
-        fontSize: 16,
-    },
     cajaResumen: {
         marginTop: 8,
         padding: 12,
@@ -211,8 +200,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
     },
     tituloLista: {
-        fontSize: 16,
+        fontSize: 22,
         fontWeight: 'bold',
+        textAlign: 'center',
         paddingVertical: 12,
     },
     filaLista: {
@@ -226,10 +216,6 @@ const styles = StyleSheet.create({
     detalleLista: {
         color: '#555',
         marginTop: 2,
-    },
-    separador: {
-        height: 1,
-        backgroundColor: '#e0e0e0',
     },
     vacio: {
         textAlign: 'center',
