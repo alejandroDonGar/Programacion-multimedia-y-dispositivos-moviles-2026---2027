@@ -1917,3 +1917,93 @@ const eliminarTarjeta = (idAEliminar: string) => {
 * **Pantalla con los datos introducidos y el resultado del IMC calculado:**
 
 ![Pantalla con datos y resultado IMC](/imagenesREADME/calculadora_funcional_imc.png)
+
+# Paso 18: Diario de emociones
+
+En esta práctica creamos una pantalla que permite escribir entradas en un diario personal mediante un `TextInput` y guardarlas en una lista para que no desaparezcan al añadir nuevas. Cada entrada muestra el texto escrito, la fecha y hora exacta (incluidos los segundos) y un icono dinámico de `@expo/vector-icons` (`Ionicons`) según la emoción detectada en el mensaje (`:-)` o `:-(`).
+
+**Nueva pantalla -> `DiarioEmocionesScreen`**
+
+Creamos la pantalla dentro de `src/screens/DiarioEmocionesScreen.tsx` y su ruta en `src/app/practica18.tsx` para enlazarla desde el menú principal.
+
+**Tipado y Estados**
+
+Definimos el tipo `Entrada` para estructurar cada registro del diario y dos estados principales: `texto` para controlar lo que se escribe en el input y `lista` para almacenar el historial completo de mensajes.
+
+```tsx
+type Entrada = {
+    id: string;
+    texto: string;
+    fecha: string;
+    icono: 'happy-outline' | 'sad-outline' | 'chatbubble-outline';
+};
+
+const [texto, setTexto] = useState('');
+const [lista, setLista] = useState<Entrada[]>([]);
+```
+
+**Detección de emoción, fecha con segundos y guardado (`guardar`)**
+
+Al pulsar el botón de añadir:
+
+1. Validamos con `.trim()` que el texto no esté vacío.
+2. Comprobamos con `.includes()` si el mensaje contiene `:-)` (asignando el icono `happy-outline`) o `:-(` (asignando `sad-outline`).
+3. Obtenemos la fecha y la hora con segundos mediante `new Date()` (`toLocaleDateString()` y `toLocaleTimeString()`).
+4. Añadimos la nueva entrada al inicio del array `lista` sin borrar las anteriores y vaciamos el `TextInput`.
+
+```tsx
+const guardar = () => {
+    if (!texto.trim()) {
+        Alert.alert('Error', 'Escribe algo primero');
+        return;
+    }
+
+    let iconoElegido: 'happy-outline' | 'sad-outline' | 'chatbubble-outline' = 'chatbubble-outline';
+
+    if (texto.includes(':-)')) {
+        iconoElegido = 'happy-outline';
+    } else if (texto.includes(':-(')) {
+        iconoElegido = 'sad-outline';
+    }
+
+    const ahora = new Date();
+    const fechaConSegundos = `${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString()}`;
+
+    const nuevaEntrada: Entrada = {
+        id: Date.now().toString(),
+        texto: texto.trim(),
+        fecha: fechaConSegundos,
+        icono: iconoElegido,
+    };
+
+    setLista([nuevaEntrada, ...lista]);
+    setTexto('');
+};
+```
+
+**Renderizado del listado (`FlatList`)**
+
+Mostramos las entradas acumuladas renderizando en cada tarjeta el componente `<Ionicons>` con el icono correspondiente, la marca temporal y el texto del usuario.
+
+```tsx
+<FlatList
+    style={styles.lista}
+    data={lista}
+    keyExtractor={(item) => item.id}
+    renderItem={({ item }) => (
+        <View style={styles.tarjeta}>
+            <Ionicons name={item.icono} size={28} color="#333" />
+            <View style={styles.textos}>
+                <Text style={styles.fecha}>{item.fecha}</Text>
+                <Text style={styles.mensaje}>{item.texto}</Text>
+            </View>
+        </View>
+    )}
+/>
+```
+
+**Resultado en el emulador**
+
+* **Pantalla del diario con varias entradas guardadas, fecha con segundos e iconos según la emoción:**
+
+![Diario de emociones con mensajes añadidos](/imagenesREADME/diario_de_emociones.png)
