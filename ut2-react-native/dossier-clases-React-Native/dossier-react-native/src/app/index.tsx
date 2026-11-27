@@ -28,7 +28,6 @@ export default function Index() {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   lista: { 
     padding: 20, 
